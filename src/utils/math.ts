@@ -140,3 +140,65 @@ export function lerpFromWhite(targetHSL: string, t: number): string {
 
   return lerpHSL(white, target, t)
 }
+
+// ============ Color Cycling ============
+
+// 預設的三色循環配置
+export const CYCLE_COLORS = [
+  { h: 180, s: 100, l: 70 },  // Cyan 青色
+  { h: 300, s: 100, l: 70 },  // Magenta 洋紅
+  { h: 240, s: 100, l: 80 },  // Blue-purple 藍紫
+]
+
+/**
+ * 在多個顏色之間平滑循環
+ * @param time 時間（秒）
+ * @param offset 相位偏移 (0-1)，用於讓不同粒子有不同的起始顏色
+ * @param cycleDuration 完成一個完整循環的時間（秒）
+ * @param colors 要循環的顏色陣列
+ */
+export function cycleColors(
+  time: number,
+  offset: number = 0,
+  cycleDuration: number = 6,
+  colors: { h: number; s: number; l: number }[] = CYCLE_COLORS
+): string {
+  const colorCount = colors.length
+
+  // 計算當前在循環中的位置 (0 到 colorCount)
+  const cycleProgress = ((time / cycleDuration) + offset) % 1
+  const position = cycleProgress * colorCount
+
+  // 找出當前在哪兩個顏色之間
+  const colorIndex = Math.floor(position)
+  const nextColorIndex = (colorIndex + 1) % colorCount
+  const t = position - colorIndex // 兩色之間的插值比例
+
+  const from = colors[colorIndex]
+  const to = colors[nextColorIndex]
+
+  return lerpHSL(from, to, t)
+}
+
+/**
+ * 從白色漸變到循環顏色
+ * @param time 時間（秒）
+ * @param offset 相位偏移 (0-1)
+ * @param colorProgress 顏色進度 (0=白色, 1=完全著色)
+ * @param cycleDuration 循環週期（秒）
+ */
+export function cycleFromWhite(
+  time: number,
+  offset: number,
+  colorProgress: number,
+  cycleDuration: number = 6
+): string {
+  if (colorProgress <= 0) return 'white'
+
+  const targetColor = cycleColors(time, offset, cycleDuration)
+  const target = parseHSL(targetColor)
+  if (!target) return 'white'
+
+  const white = { h: target.h, s: 0, l: 100 }
+  return lerpHSL(white, target, colorProgress)
+}

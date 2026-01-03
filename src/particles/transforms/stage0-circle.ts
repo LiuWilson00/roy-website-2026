@@ -3,7 +3,8 @@
  * 粒子排列成圓形，透過半徑變化產生呼吸效果
  */
 
-import type { Particle, ParticleState, TransformContext, StageTransform } from '../types'
+import type { Particle, ParticleState, TransformContext, StageTransform, SceneState } from '../types'
+import { DEFAULT_CORE_STATE } from '../types'
 import { polarToCartesian } from '../../utils/math'
 
 // Stage 0 配置
@@ -14,6 +15,9 @@ export const STAGE0_CONFIG = {
   glowBase: 4,
   glowAmplitude: 4,
   particleSize: 3,
+  // 粒子大小脈動
+  sizePulseAmplitude: 0,   // Stage 0 不脈動
+  sizePulseSpeed: 0,
 }
 
 /**
@@ -44,6 +48,7 @@ export const stage0Transform: StageTransform = (
     r: config.particleSize,
     opacity: 1,
     glow,
+    trailLength: 0, // Stage 0 無拖尾
   }
 }
 
@@ -54,6 +59,20 @@ export function getBreathRadius(time: number): number {
   const config = STAGE0_CONFIG
   const breathFactor = 1 + config.breathAmplitude * Math.sin(time * config.breathFrequency * Math.PI * 2)
   return config.baseRadius * breathFactor
+}
+
+/**
+ * Stage 0 場景狀態
+ * Stage 0 沒有中心光核
+ */
+export function stage0SceneState(context: TransformContext): SceneState {
+  return {
+    core: {
+      ...DEFAULT_CORE_STATE,
+      visible: false,
+      opacity: 0,
+    }
+  }
 }
 
 export default stage0Transform

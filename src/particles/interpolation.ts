@@ -3,8 +3,9 @@
  * 處理 Stage 之間的平滑過渡
  */
 
-import type { Particle, ParticleState, TransformContext, StageTransform, StageConfig } from './types'
-import { lerp, easeInOutCubic, clamp } from '../utils/math'
+import type { Particle, ParticleState, TransformContext, StageTransform, StageConfig, SceneState, CoreGlowState } from './types'
+import { DEFAULT_CORE_STATE } from './types'
+import { lerp, easeInOutCubic, clamp, lerpHSL, parseHSL } from '../utils/math'
 
 /**
  * 在兩個 ParticleState 之間進行插值
@@ -23,6 +24,7 @@ export function interpolateState(
     r: lerp(from.r, to.r, t),
     opacity: lerp(from.opacity, to.opacity, t),
     glow: lerp(from.glow, to.glow, t),
+    trailLength: lerp(from.trailLength ?? 0, to.trailLength ?? 0, t),
   }
 }
 
@@ -97,5 +99,66 @@ export function createTransitionTransform(
 ): StageTransform {
   return (particle: Particle, context: TransformContext): ParticleState => {
     return interpolateStages(particle, context, fromTransform, toTransform, progress)
+  }
+}
+
+// ============ Scene State Interpolation ============
+
+/**
+ * 插值兩個顏色字串
+ */
+function lerpColorString(from: string, to: string, t: number): string {
+  const fromHSL = parseHSL(from)
+  const toHSL = parseHSL(to)
+
+  if (!fromHSL || !toHSL) {
+    return t < 0.5 ? from : to
+  }
+
+  return lerpHSL(fromHSL, toHSL, t)
+}
+
+/**
+ * 在兩個 CoreGlowState 之間進行插值
+ */
+export function interpolateCoreState(
+  from: CoreGlowState,
+  to: CoreGlowState,
+  progress: number
+): CoreGlowState {
+  const t = easeInOutCubic(clamp(progress, 0, 1))
+
+  return {
+    visible: t > 0.01 ? (from.visible || to.visible) : from.visible,
+    opacity: lerp(from.opacity, to.opacity, t),
+    size: lerp(from.size, to.size, t),
+    rotation: lerp(from.rotation, to.rotation, t),
+    rotationSpeed: lerp(from.rotationSpeed, to.rotationSpeed, t),
+
+    coreRadius: lerp(from.coreRadius, to.coreRadius, t),
+    coreColor: lerpColorString(from.coreColor, to.coreColor, t),
+    coreGlow: lerp(from.coreGlow, to.coreGlow, t),
+
+    rayCount: Math.round(lerp(from.rayCount, to.rayCount, t)),
+    rayLength: lerp(from.rayLength, to.rayLength, t),
+    rayWidth: lerp(from.rayWidth, to.rayWidth, t),
+    rayColor: lerpColorString(from.rayColor, to.rayColor, t),
+
+    pulseSpeed: lerp(from.pulseSpeed, to.pulseSpeed, t),
+    pulseAmplitude: lerp(from.pulseAmplitude, to.pulseAmplitude, t),
+  }
+}
+
+/**
+ * 在兩個 SceneState 之間進行插值
+ */
+export function interpolateSceneState(
+  from: SceneState,
+  to: SceneState,
+  progress: number
+): SceneState {
+  return {
+    core: interpolateCoreState(from.core, to.core, progress),
+    // 未來擴充其他場景元素的插值
   }
 }

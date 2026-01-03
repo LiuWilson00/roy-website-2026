@@ -4,7 +4,8 @@
  * 引入青色 (Cyan) 與洋紅 (Magenta) 色彩
  */
 
-import type { Particle, ParticleState, TransformContext, StageTransform } from '../types'
+import type { Particle, ParticleState, TransformContext, StageTransform, SceneState, CoreGlowState } from '../types'
+import { DEFAULT_CORE_STATE } from '../types'
 import { polarToCartesian } from '../../utils/math'
 
 // Stage 1 配置
@@ -23,6 +24,29 @@ export const STAGE1_CONFIG = {
   // 光暈
   glowBase: 5,
   glowAmplitude: 3,
+  // 粒子大小脈動 (Effect A)
+  sizePulseAmplitude: 0.4,  // 40% 大小變化
+  sizePulseSpeed: 2,        // 2秒週期
+}
+
+// 中心光核配置 (Effect F)
+export const STAGE1_CORE_CONFIG: Partial<CoreGlowState> = {
+  visible: true,
+  opacity: 0.85,
+  size: 80,
+  rotationSpeed: 0.02,     // 非常慢速旋轉（約 50 秒一圈）
+
+  coreRadius: 12,
+  coreColor: 'hsl(280, 100%, 80%)',  // 紫色核心
+  coreGlow: 10,
+
+  rayCount: 24,            // 更多光線，更細緻
+  rayLength: 50,
+  rayWidth: 1.5,           // 更細的基礎寬度
+  rayColor: 'hsl(200, 100%, 85%)',   // 青色光線
+
+  pulseSpeed: 0.15,        // 更慢的脈動（約 6-7 秒週期）
+  pulseAmplitude: 0.08,    // 更小的脈動幅度
 }
 
 // 色彩配置 (HSL 格式便於漸變)
@@ -88,12 +112,19 @@ export const stage1Transform: StageTransform = (
   // 光暈效果
   const glow = config.glowBase + config.glowAmplitude * Math.sin(time * 0.5 + layer)
 
+  // 粒子大小脈動 (Effect A)
+  // 每個粒子有不同的相位偏移，產生波浪效果
+  const sizePhase = theta + layer * 0.5 // 基於角度和層級的相位偏移
+  const sizePulse = 1 + config.sizePulseAmplitude * Math.sin(time * config.sizePulseSpeed * Math.PI + sizePhase)
+  const particleSize = config.particleSize * sizePulse
+
   return {
     x: pos.x,
     y: pos.y,
-    r: config.particleSize,
+    r: particleSize,
     opacity: 1,
     glow,
+    trailLength: 0.8, // Stage 1 有拖尾效果
   }
 }
 
@@ -107,6 +138,23 @@ export function getLayerRadius(layer: number, time: number): number {
 
   const breathFactor = 1 + config.breathAmplitude * Math.sin(time * config.breathFrequency * Math.PI * 2)
   return layerConfig.radius * breathFactor
+}
+
+/**
+ * Stage 1 場景狀態
+ * 包含中心光核效果
+ */
+export function stage1SceneState(context: TransformContext): SceneState {
+  const { time } = context
+
+  return {
+    core: {
+      ...DEFAULT_CORE_STATE,
+      ...STAGE1_CORE_CONFIG,
+      visible: true,
+      rotation: time * (STAGE1_CORE_CONFIG.rotationSpeed ?? 0.1),
+    }
+  }
 }
 
 export default stage1Transform
