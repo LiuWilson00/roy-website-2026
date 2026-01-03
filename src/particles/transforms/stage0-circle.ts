@@ -65,7 +65,7 @@ export function getBreathRadius(time: number): number {
  * Stage 0 場景狀態
  * Stage 0 沒有中心光核
  */
-export function stage0SceneState(context: TransformContext): SceneState {
+export function stage0SceneState(_context: TransformContext): SceneState {
   return {
     core: {
       ...DEFAULT_CORE_STATE,

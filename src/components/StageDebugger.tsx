@@ -11,8 +11,9 @@ interface StageDebuggerProps {
 /**
  * 顯示當前 Stage 狀態的 Debug 組件
  */
-export function StageDebugger({ scrollProgress }: StageDebuggerProps) {
+export function StageDebugger({ scrollProgress: _scrollProgress }: StageDebuggerProps) {
   // 已停用 debug 顯示
+  void _scrollProgress
   return null
 }
 

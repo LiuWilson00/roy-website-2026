@@ -91,21 +91,6 @@ function StarDecoration({ className }: { className?: string }) {
   )
 }
 
-/**
- * 漢堡選單圖示
- */
-function HamburgerIcon({ className }: { className?: string }) {
-  return (
-    <button className={`${className} hover:opacity-70 transition-opacity`}>
-      <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
-        <line x1="0" y1="1" x2="24" y2="1" stroke="currentColor" strokeWidth="2" />
-        <line x1="0" y1="9" x2="24" y2="9" stroke="currentColor" strokeWidth="2" />
-        <line x1="0" y1="17" x2="24" y2="17" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    </button>
-  )
-}
-
 export default function IntroOverlay({ scrollProgress, onNavigateNext }: IntroOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const { displayText, isComplete } = useTypewriter(

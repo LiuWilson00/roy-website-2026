@@ -5,7 +5,7 @@
 
 import { useMemo, useRef, useCallback } from 'react'
 import gsap from 'gsap'
-import type { Particle, ParticleSystemConfig, TrailConfig, DEFAULT_TRAIL_CONFIG, Point } from '../particles/types'
+import type { Particle, ParticleSystemConfig, TrailConfig, Point } from '../particles/types'
 
 // 位置歷史記錄
 interface PositionHistory {

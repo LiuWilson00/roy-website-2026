@@ -139,7 +139,7 @@ export function stage3Transform(
  * Stage 3 場景狀態
  * 無中心光核
  */
-export function stage3SceneState(context: TransformContext): SceneState {
+export function stage3SceneState(_context: TransformContext): SceneState {
   return {
     core: {
       ...DEFAULT_CORE_STATE,

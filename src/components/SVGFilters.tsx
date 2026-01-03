@@ -3,7 +3,6 @@
  * 包含粒子系統使用的光暈效果
  */
 
-import { forwardRef } from 'react'
 
 interface SVGFiltersProps {
   glowRef?: React.Ref<SVGFEGaussianBlurElement>
