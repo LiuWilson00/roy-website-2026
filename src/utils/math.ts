@@ -93,3 +93,50 @@ export function lerpAngle(a: number, b: number, t: number): number {
   if (diff < -Math.PI) diff += TWO_PI
   return a + diff * t
 }
+
+// ============ Color Utilities ============
+
+// 解析 HSL 字串 "hsl(h, s%, l%)" 為 {h, s, l}
+export function parseHSL(hslString: string): { h: number; s: number; l: number } | null {
+  const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
+  if (!match) return null
+  return {
+    h: parseInt(match[1], 10),
+    s: parseInt(match[2], 10),
+    l: parseInt(match[3], 10),
+  }
+}
+
+// HSL 轉字串
+export function hslToString(h: number, s: number, l: number): string {
+  return `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`
+}
+
+// 在兩個 HSL 顏色之間插值
+export function lerpHSL(
+  from: { h: number; s: number; l: number },
+  to: { h: number; s: number; l: number },
+  t: number
+): string {
+  // 色相需要特殊處理（環繞）
+  let hDiff = to.h - from.h
+  if (hDiff > 180) hDiff -= 360
+  if (hDiff < -180) hDiff += 360
+
+  const h = (from.h + hDiff * t + 360) % 360
+  const s = lerp(from.s, to.s, t)
+  const l = lerp(from.l, to.l, t)
+
+  return hslToString(h, s, l)
+}
+
+// 從白色插值到目標 HSL 顏色
+export function lerpFromWhite(targetHSL: string, t: number): string {
+  const target = parseHSL(targetHSL)
+  if (!target) return 'white'
+
+  // 白色 = hsl(0, 0%, 100%)
+  const white = { h: target.h, s: 0, l: 100 }
+
+  return lerpHSL(white, target, t)
+}

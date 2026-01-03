@@ -16,6 +16,7 @@ export interface ParticleState {
   r: number          // 點的大小
   opacity: number    // 透明度 [0, 1]
   glow: number       // 光暈強度
+  color?: string     // 顏色（可選，預設白色）
 }
 
 // 2D 座標

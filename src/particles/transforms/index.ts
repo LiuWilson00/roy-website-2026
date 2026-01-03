@@ -3,7 +3,7 @@
  */
 
 export { stage0Transform, getBreathRadius, STAGE0_CONFIG } from './stage0-circle'
+export { stage1Transform, getLayerColor, getLayerRadius, STAGE1_CONFIG, STAGE1_COLORS } from './stage1-bloom'
 
 // 未來 stages 將在這裡匯出
-// export { stage1Transform } from './stage1-bloom'
 // export { stage2Transform } from './stage2-matrix'
