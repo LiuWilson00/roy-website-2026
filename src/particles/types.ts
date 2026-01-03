@@ -13,11 +13,15 @@ export interface Particle {
 export interface ParticleState {
   x: number          // 螢幕 X 座標
   y: number          // 螢幕 Y 座標
-  r: number          // 點的大小
-  opacity: number    // 透明度 [0, 1]
+  r: number          // 圓形半徑（點的大小）
+  opacity: number    // 圓形透明度 [0, 1]
   glow: number       // 光暈強度
   color?: string     // 顏色（可選，預設白色）
   trailLength?: number  // 拖尾長度 [0, 1]，0 = 無拖尾
+
+  // 方形屬性（用於 Stage 3 等）
+  rectSize?: number     // 方形邊長（0 或 undefined = 不顯示）
+  rectOpacity?: number  // 方形透明度 [0, 1]
 }
 
 // 拖尾配置

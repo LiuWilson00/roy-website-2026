@@ -8,6 +8,25 @@ import { DEFAULT_CORE_STATE } from './types'
 import { lerp, easeInOutCubic, clamp, lerpHSL, parseHSL } from '../utils/math'
 
 /**
+ * 插值兩個顏色字串（支援 'white' 和 HSL 格式）
+ */
+function lerpColor(from: string | undefined, to: string | undefined, t: number): string | undefined {
+  if (!from && !to) return undefined
+  if (!from) return to
+  if (!to) return from
+
+  const fromHSL = parseHSL(from)
+  const toHSL = parseHSL(to)
+
+  if (!fromHSL || !toHSL) {
+    // 無法解析時使用階梯式切換
+    return t < 0.5 ? from : to
+  }
+
+  return lerpHSL(fromHSL, toHSL, t)
+}
+
+/**
  * 在兩個 ParticleState 之間進行插值
  */
 export function interpolateState(
@@ -25,6 +44,11 @@ export function interpolateState(
     opacity: lerp(from.opacity, to.opacity, t),
     glow: lerp(from.glow, to.glow, t),
     trailLength: lerp(from.trailLength ?? 0, to.trailLength ?? 0, t),
+    // 方形屬性插值（支援圓形↔方形平滑過渡）
+    rectSize: lerp(from.rectSize ?? 0, to.rectSize ?? 0, t),
+    rectOpacity: lerp(from.rectOpacity ?? 0, to.rectOpacity ?? 0, t),
+    // 顏色插值（支援 white 與 HSL 之間平滑過渡）
+    color: lerpColor(from.color, to.color, t),
   }
 }
 

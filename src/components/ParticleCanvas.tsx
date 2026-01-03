@@ -18,6 +18,10 @@ import {
   getLayerColor,
   stage0SceneState,
   stage1SceneState,
+  stage2Transform,
+  stage2SceneState,
+  stage3Transform,
+  stage3SceneState,
 } from '../particles/transforms'
 import { interpolateState, interpolateSceneState } from '../particles/interpolation'
 import {
@@ -46,12 +50,15 @@ interface StageDefinition {
 const STAGES: StageDefinition[] = [
   { id: 0, name: 'circle', transform: stage0Transform, sceneState: stage0SceneState },
   { id: 1, name: 'bloom', transform: stage1Transform, sceneState: stage1SceneState },
+  { id: 2, name: 'planetary', transform: stage2Transform, sceneState: stage2SceneState },
+  { id: 3, name: 'grid', transform: stage3Transform, sceneState: stage3SceneState },
 ]
 
 export default function ParticleCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<(SVGCircleElement | null)[]>([])
+  const rectsRef = useRef<(SVGRectElement | null)[]>([])  // 方形粒子
   const glowRef = useRef<SVGFEGaussianBlurElement>(null)
   const glowIntensityRef = useRef<SVGFEGaussianBlurElement>(null)
   const pulseValueRef = useRef(0) // 脈動值 0-1
@@ -184,15 +191,35 @@ export default function ParticleCanvas() {
       }
     }
 
-    // 動態循環顏色（每個粒子有不同的相位偏移）
-    // 使用 theta 作為偏移，讓相鄰粒子有相近但不同的顏色
-    const colorOffset = particle.theta / (Math.PI * 2) // 0-1 基於角度位置
+    // Stage 3 使用純白色，不套用顏色循環
+    // 計算 Stage 3 的強度（progress >= 2 開始過渡到 Stage 3）
+    const stage3Strength = Math.max(0, Math.min(1, progress - 2))
 
-    // 使用 easing 讓顏色過渡更自然
-    const colorProgress = easeInOutCubic(Math.min(progress, 1))
+    if (stage3Strength >= 1) {
+      // Stage 3 完全進入：使用純白色
+      baseState.color = 'white'
+    } else {
+      // Stage 0-2: 動態循環顏色（每個粒子有不同的相位偏移）
+      // 使用 theta 作為偏移，讓相鄰粒子有相近但不同的顏色
+      const colorOffset = particle.theta / (Math.PI * 2) // 0-1 基於角度位置
 
-    // 從白色漸變到循環顏色，週期 8 秒
-    baseState.color = cycleFromWhite(context.time, colorOffset, colorProgress, 8)
+      // 使用 easing 讓顏色過渡更自然
+      const colorProgress = easeInOutCubic(Math.min(progress, 1))
+
+      // 從白色漸變到循環顏色，週期 8 秒
+      const cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, 8)
+
+      if (stage3Strength > 0) {
+        // Stage 2→3 過渡中：從循環顏色漸變回白色
+        // 使用 easing 讓過渡更平滑
+        const fadeToWhite = easeInOutCubic(stage3Strength)
+        // 透過降低飽和度和提高亮度來漸變回白色
+        const fadedColorProgress = colorProgress * (1 - fadeToWhite)
+        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, 8)
+      } else {
+        baseState.color = cycleColor
+      }
+    }
 
     return baseState
   }
@@ -244,12 +271,25 @@ export default function ParticleCanvas() {
       // 記錄位置（用於拖尾）
       recordPosition(i, state.x, state.y)
 
-      // 更新主粒子
+      // 更新圓形粒子
       dot.setAttribute('cx', String(state.x))
       dot.setAttribute('cy', String(state.y))
-      dot.setAttribute('r', String(state.r))
+      dot.setAttribute('r', String(Math.max(0, state.r)))
       dot.setAttribute('opacity', String(state.opacity))
       dot.setAttribute('fill', state.color || 'white')
+
+      // 更新方形粒子
+      const rect = rectsRef.current[i]
+      if (rect) {
+        const rectSize = state.rectSize ?? 0
+        const rectOpacity = state.rectOpacity ?? 0
+        rect.setAttribute('x', String(state.x - rectSize / 2))
+        rect.setAttribute('y', String(state.y - rectSize / 2))
+        rect.setAttribute('width', String(rectSize))
+        rect.setAttribute('height', String(rectSize))
+        rect.setAttribute('opacity', String(rectOpacity))
+        rect.setAttribute('fill', state.color || 'white')
+      }
 
       // 更新光暈覆蓋層粒子位置和顏色
       const glowDot = glowDotsRef.current[i]
@@ -303,15 +343,28 @@ export default function ParticleCanvas() {
     // 更新光暈強度（基於滾動進度）
     const progress = scrollProgressRef.current
     if (mainGroupRef.current) {
-      // 在 Stage 1 使用更強的光暈
-      const filterName = progress > 0.3 ? 'glow-intense' : 'glow'
-      mainGroupRef.current.setAttribute('filter', `url(#${filterName})`)
+      // Stage 3 無光暈，Stage 1-2 使用強光暈，Stage 0 使用基礎光暈
+      let filterValue = 'url(#glow)'
+      if (progress >= 2.5) {
+        // Stage 3: 完全無光暈
+        filterValue = 'none'
+      } else if (progress >= 2) {
+        // Stage 2→3 過渡：漸漸減弱光暈（仍使用基礎光暈）
+        filterValue = 'url(#glow)'
+      } else if (progress > 0.3) {
+        // Stage 1-2: 使用更強的光暈
+        filterValue = 'url(#glow-intense)'
+      }
+      mainGroupRef.current.setAttribute('filter', filterValue)
     }
 
     // 更新光暈覆蓋層透明度（脈動效果）
+    // Stage 3 無光暈覆蓋層
     if (glowOverlayRef.current) {
       const pulseIntensity = pulseValueRef.current
-      const glowOpacity = progress * 0.3 * (0.5 + pulseIntensity * 0.5)
+      // 在 Stage 2→3 過渡時漸漸消失
+      const stage3Fade = progress >= 2 ? Math.max(0, 1 - (progress - 2)) : 1
+      const glowOpacity = progress * 0.3 * (0.5 + pulseIntensity * 0.5) * stage3Fade
       glowOverlayRef.current.setAttribute('opacity', String(glowOpacity))
     }
 
@@ -377,11 +430,21 @@ export default function ParticleCanvas() {
   useGSAP(() => {
     if (!containerRef.current) return
 
+    // 計算每個 Stage 的吸附點
+    const snapIncrement = 1 / (STAGES.length - 1)  // 0, 0.33, 0.67, 1
+
     ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
       end: 'bottom bottom',
       scrub: 0.5,
+      // 滾動吸附設置
+      snap: {
+        snapTo: snapIncrement,  // 每 33% 吸附一次
+        duration: { min: 0.2, max: 0.6 },  // 吸附動畫時長
+        delay: 0.1,  // 停止滾動後延遲開始吸附
+        ease: 'power2.inOut',  // 吸附動畫曲線
+      },
       onUpdate: (self) => {
         // 將滾動進度映射到 Stage (0-1 = Stage 0→1)
         scrollProgressRef.current = self.progress * (STAGES.length - 1)
@@ -460,7 +523,7 @@ export default function ParticleCanvas() {
     <div
       ref={containerRef}
       className="relative bg-black"
-      style={{ height: '200vh' }} // 足夠的滾動空間
+      style={{ height: '400vh' }} // 足夠的滾動空間（4 個 Stage）
     >
       {/* Sticky 容器：固定在視窗中 */}
       <div
@@ -554,7 +617,7 @@ export default function ParticleCanvas() {
                 />
               ))}
 
-              {/* 主粒子 */}
+              {/* 主粒子 - 圓形 */}
               {particles.map((particle, i) => {
                 const pos = getInitialPosition(i)
                 return (
@@ -565,6 +628,23 @@ export default function ParticleCanvas() {
                     cy={pos.y}
                     r={3}
                     fill="white"
+                  />
+                )
+              })}
+
+              {/* 主粒子 - 方形 */}
+              {particles.map((particle, i) => {
+                const pos = getInitialPosition(i)
+                return (
+                  <rect
+                    key={`rect-${particle.id}`}
+                    ref={(el) => { rectsRef.current[i] = el }}
+                    x={pos.x}
+                    y={pos.y}
+                    width={0}
+                    height={0}
+                    fill="white"
+                    opacity={0}
                   />
                 )
               })}

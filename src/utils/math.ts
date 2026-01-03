@@ -97,7 +97,13 @@ export function lerpAngle(a: number, b: number, t: number): number {
 // ============ Color Utilities ============
 
 // 解析 HSL 字串 "hsl(h, s%, l%)" 為 {h, s, l}
+// 也支援 'white' 作為特殊值
 export function parseHSL(hslString: string): { h: number; s: number; l: number } | null {
+  // 處理 'white' 特殊值
+  if (hslString.toLowerCase() === 'white') {
+    return { h: 0, s: 0, l: 100 }
+  }
+
   const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
   if (!match) return null
   return {
