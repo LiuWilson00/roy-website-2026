@@ -1,7 +1,7 @@
-import CyberIris from './components/CyberIris'
+import ParticleCanvas from './components/ParticleCanvas'
 
 function App() {
-  return <CyberIris />
+  return <ParticleCanvas />
 }
 
 export default App
