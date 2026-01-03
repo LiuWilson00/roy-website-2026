@@ -139,6 +139,17 @@ export interface SceneState {
  */
 export type SceneTransform = (context: TransformContext) => SceneState
 
+/**
+ * Stage 定義
+ * 用於定義每個 Stage 的變換和場景狀態
+ */
+export interface StageDefinition {
+  id: number
+  name: string
+  transform: StageTransform
+  sceneState: SceneTransform
+}
+
 // 預設核心光暈狀態
 export const DEFAULT_CORE_STATE: CoreGlowState = {
   visible: false,

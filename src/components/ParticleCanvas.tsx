@@ -3,7 +3,7 @@
  * 支援滾動驅動的 Stage 切換與過渡效果
  */
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 
@@ -14,6 +14,11 @@ import { useStageComputation, type StageDefinition } from '../hooks/useStageComp
 import CoreGlow from './CoreGlow'
 import SVGFilters from './SVGFilters'
 import StageDebugger from './StageDebugger'
+import GlobalNav from './GlobalNav'
+import IntroOverlay from './IntroOverlay'
+import { Stage1Overlay } from './stage1'
+import { Stage2Overlay } from './stage2'
+import { Stage4Overlay } from './stage4'
 import {
   stage0Transform,
   getBreathRadius,
@@ -96,6 +101,25 @@ export default function ParticleCanvas() {
 
   // 光核互動強度
   const coreInteractionRef = useRef(0)
+
+  // 用於 UI 渲染的滾動進度
+  const [displayProgress, setDisplayProgress] = useState(0)
+
+  // 導航到指定 Stage
+  const navigateToStage = useCallback((stage: number) => {
+    if (!containerRef.current) return
+    const containerHeight = containerRef.current.scrollHeight - window.innerHeight
+    const targetScroll = (stage / (STAGES.length - 1)) * containerHeight
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' })
+  }, [])
+
+  // 導航到下一個 Stage
+  const navigateToNextStage = useCallback(() => {
+    const currentStage = Math.floor(scrollProgressRef.current)
+    if (currentStage < STAGES.length - 1) {
+      navigateToStage(currentStage + 1)
+    }
+  }, [navigateToStage])
 
   // 更新畫布中心
   useEffect(() => {
@@ -227,6 +251,9 @@ export default function ParticleCanvas() {
     const newSceneState = computeSceneState(context, scrollProgressRef.current)
     setSceneState(newSceneState)
     timeRef.current = time
+
+    // 更新顯示進度（用於 UI）
+    setDisplayProgress(scrollProgressRef.current)
 
     // 計算光核互動強度
     coreInteractionRef.current = calculateCoreInteraction(mouseRef.current, center)
@@ -432,20 +459,35 @@ export default function ParticleCanvas() {
           </svg>
         )}
 
-        {/* 標題 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
-          <h1 className="text-white/10 font-mono text-2xl tracking-[0.3em] uppercase">
-            Cyber Iris
-          </h1>
-        </div>
+        {/* 全域導航 */}
+        <GlobalNav
+          scrollProgress={displayProgress}
+          onNavigate={navigateToStage}
+        />
 
-        {/* 底部提示 */}
-        <div className="absolute bottom-10 w-full text-center text-gray-600 font-mono text-sm animate-pulse">
-          SCROLL TO EXPLORE
-        </div>
+        {/* Intro Overlay - Stage 0 個人資訊 */}
+        <IntroOverlay
+          scrollProgress={displayProgress}
+          onNavigateNext={navigateToNextStage}
+        />
+
+        {/* Stage 1 Overlay - 經歷與技能 */}
+        <Stage1Overlay
+          scrollProgress={displayProgress}
+          onNavigateNext={navigateToNextStage}
+        />
+
+        {/* Stage 2 Overlay - Project Galaxy */}
+        <Stage2Overlay
+          scrollProgress={displayProgress}
+          onNavigateNext={navigateToNextStage}
+        />
+
+        {/* Stage 3 Overlay - Contact */}
+        <Stage4Overlay scrollProgress={displayProgress} />
 
         {/* Debug UI */}
-        <StageDebugger scrollProgress={scrollProgressRef.current} />
+        <StageDebugger scrollProgress={displayProgress} />
       </div>
     </div>
   )

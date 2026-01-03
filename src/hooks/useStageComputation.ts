@@ -4,7 +4,7 @@
  */
 
 import { useCallback } from 'react'
-import type { Particle, ParticleState, TransformContext, SceneState, StageTransform, SceneTransform } from '../particles/types'
+import type { Particle, ParticleState, TransformContext, SceneState, StageDefinition } from '../particles/types'
 import { interpolateState, interpolateSceneState } from '../particles/interpolation'
 import {
   calculateHoverOffset,
@@ -15,12 +15,23 @@ import {
 import { getBreathRadius } from '../particles/transforms'
 import { easeInOutCubic, cycleFromWhite } from '../utils/math'
 
-// Stage 定義
-export interface StageDefinition {
-  id: number
-  name: string
-  transform: StageTransform
-  sceneState: SceneTransform
+// Re-export for convenience
+export type { StageDefinition }
+
+// Stage 互動強度配置
+export const STAGE_TRANSITION_CONFIG = {
+  /** Stage 0 互動在此進度後開始減弱 */
+  stage0FadeStart: 0,
+  /** Stage 0 互動完全消失的進度 */
+  stage0FadeEnd: 0.5,
+  /** Stage 1 互動開始的進度 */
+  stage1Start: 0.3,
+  /** Stage 1 互動完全生效的進度 */
+  stage1Full: 1.0,
+  /** Stage 3 過渡開始的進度 */
+  stage3TransitionStart: 2,
+  /** 顏色循環週期（秒） */
+  colorCycleDuration: 8,
 }
 
 interface UseStageComputationOptions {
@@ -88,7 +99,8 @@ export function useStageComputation({
     }
 
     // Stage 0 互動效果（接近 Stage 0 時應用，逐漸減弱）
-    const stage0Strength = Math.max(0, 1 - progress * 2)
+    const { stage0FadeEnd, stage1Start, stage1Full, stage3TransitionStart, colorCycleDuration } = STAGE_TRANSITION_CONFIG
+    const stage0Strength = Math.max(0, 1 - progress / stage0FadeEnd)
 
     if (stage0Strength > 0) {
       const breathRadius = getBreathRadius(context.time)
@@ -110,7 +122,7 @@ export function useStageComputation({
     }
 
     // Stage 1 互動效果（進入 Stage 1 後啟用）
-    const stage1Strength = Math.min(1, Math.max(0, progress - 0.3) / 0.7)
+    const stage1Strength = Math.min(1, Math.max(0, progress - stage1Start) / (stage1Full - stage1Start))
 
     if (stage1Strength > 0) {
       // Effect A: 磁力排斥
@@ -137,8 +149,8 @@ export function useStageComputation({
     }
 
     // Stage 3 使用純白色，不套用顏色循環
-    // 計算 Stage 3 的強度（progress >= 2 開始過渡到 Stage 3）
-    const stage3Strength = Math.max(0, Math.min(1, progress - 2))
+    // 計算 Stage 3 的強度
+    const stage3Strength = Math.max(0, Math.min(1, progress - stage3TransitionStart))
 
     if (stage3Strength >= 1) {
       // Stage 3 完全進入：使用純白色
@@ -151,8 +163,8 @@ export function useStageComputation({
       // 使用 easing 讓顏色過渡更自然
       const colorProgress = easeInOutCubic(Math.min(progress, 1))
 
-      // 從白色漸變到循環顏色，週期 8 秒
-      const cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, 8)
+      // 從白色漸變到循環顏色
+      const cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration)
 
       if (stage3Strength > 0) {
         // Stage 2→3 過渡中：從循環顏色漸變回白色
@@ -160,7 +172,7 @@ export function useStageComputation({
         const fadeToWhite = easeInOutCubic(stage3Strength)
         // 透過降低飽和度和提高亮度來漸變回白色
         const fadedColorProgress = colorProgress * (1 - fadeToWhite)
-        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, 8)
+        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, colorCycleDuration)
       } else {
         baseState.color = cycleColor
       }
