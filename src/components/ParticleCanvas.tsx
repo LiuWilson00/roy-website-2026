@@ -5,48 +5,36 @@
 
 import { useRef, useState, useEffect } from 'react'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
 
-import { useParticleSystem, type TrailPoint } from '../hooks/useParticleSystem'
+import { useParticleSystem } from '../hooks/useParticleSystem'
 import { useMousePosition } from '../hooks/useMousePosition'
+import { useScrollProgress } from '../hooks/useScrollProgress'
+import { useStageComputation, type StageDefinition } from '../hooks/useStageComputation'
 import CoreGlow from './CoreGlow'
+import SVGFilters from './SVGFilters'
+import StageDebugger from './StageDebugger'
 import {
   stage0Transform,
   getBreathRadius,
-  stage1Transform,
-  getLayerColor,
   stage0SceneState,
+  stage1Transform,
   stage1SceneState,
   stage2Transform,
   stage2SceneState,
   stage3Transform,
   stage3SceneState,
 } from '../particles/transforms'
-import { interpolateState, interpolateSceneState } from '../particles/interpolation'
 import {
-  calculateHoverOffset,
   calculateRippleStrength,
-  calculateMagneticRepulsion,
-  calculateRippleWaveOffset,
   calculateCoreInteraction,
   INTERACTION_CONFIG,
   type RippleWaveState,
 } from '../particles/interactions'
-import { lerpFromWhite, easeInOutCubic, cycleFromWhite, cycleColors } from '../utils/math'
-import type { TransformContext, Point, ParticleState, StageTransform, SceneState, SceneTransform } from '../particles/types'
-
-// 註冊 ScrollTrigger
-gsap.registerPlugin(ScrollTrigger)
+import { cycleColors } from '../utils/math'
+import type { TransformContext, Point, SceneState } from '../particles/types'
 
 // Stage 配置
-interface StageDefinition {
-  id: number
-  name: string
-  transform: StageTransform
-  sceneState: SceneTransform
-}
-
 const STAGES: StageDefinition[] = [
   { id: 0, name: 'circle', transform: stage0Transform, sceneState: stage0SceneState },
   { id: 1, name: 'bloom', transform: stage1Transform, sceneState: stage1SceneState },
@@ -58,13 +46,10 @@ export default function ParticleCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<(SVGCircleElement | null)[]>([])
-  const rectsRef = useRef<(SVGRectElement | null)[]>([])  // 方形粒子
+  const rectsRef = useRef<(SVGRectElement | null)[]>([])
   const glowRef = useRef<SVGFEGaussianBlurElement>(null)
   const glowIntensityRef = useRef<SVGFEGaussianBlurElement>(null)
-  const pulseValueRef = useRef(0) // 脈動值 0-1
-
-  // 滾動進度 (0 = Stage 0, 1 = Stage 1, etc.)
-  const scrollProgressRef = useRef(0)
+  const pulseValueRef = useRef(0)
 
   // 粒子系統
   const { particles, triggerRipple, getClickOffset, recordPosition, getTrailPoints } = useParticleSystem({
@@ -72,7 +57,20 @@ export default function ParticleCanvas() {
     baseRadius: 180,
   })
 
-  // 拖尾 refs
+  // 滾動進度
+  const { scrollProgressRef } = useScrollProgress({
+    stageCount: STAGES.length,
+    containerRef: containerRef as React.RefObject<HTMLElement>,
+  })
+
+  // Stage 計算
+  const { computeParticleState, computeSceneState } = useStageComputation({
+    stages: STAGES,
+    particles,
+    getClickOffset,
+  })
+
+  // 拖尾與光暈 refs
   const trailGroupsRef = useRef<(SVGGElement | null)[]>([])
   const mainGroupRef = useRef<SVGGElement>(null)
   const glowOverlayRef = useRef<SVGGElement>(null)
@@ -113,143 +111,6 @@ export default function ParticleCanvas() {
   }, [])
 
   /**
-   * 根據滾動進度計算粒子狀態
-   * 支援兩個 Stage 之間的平滑過渡
-   */
-  const computeParticleState = (
-    particleIndex: number,
-    context: TransformContext
-  ): ParticleState => {
-    const particle = particles[particleIndex]
-    const progress = scrollProgressRef.current
-
-    // 計算當前在哪兩個 Stage 之間
-    const stageIndex = Math.floor(progress)
-    const stageProgress = progress - stageIndex
-
-    const currentStage = STAGES[Math.min(stageIndex, STAGES.length - 1)]
-    const nextStage = STAGES[Math.min(stageIndex + 1, STAGES.length - 1)]
-
-    // 獲取兩個 Stage 的狀態
-    const currentState = currentStage.transform(particle, context)
-    const nextState = nextStage.transform(particle, context)
-
-    // 插值過渡
-    let baseState: ParticleState
-    if (stageIndex >= STAGES.length - 1 || stageProgress === 0) {
-      baseState = currentState
-    } else {
-      baseState = interpolateState(currentState, nextState, stageProgress)
-    }
-
-    // Stage 0 互動效果（接近 Stage 0 時應用，逐漸減弱）
-    const stage0Strength = Math.max(0, 1 - progress * 2)
-
-    if (stage0Strength > 0) {
-      const breathRadius = getBreathRadius(context.time)
-      const clickOffset = getClickOffset(particleIndex) * stage0Strength
-      const hoverOffset = calculateHoverOffset(
-        particle,
-        context.time,
-        context.mouse,
-        context.center,
-        breathRadius + clickOffset
-      ) * stage0Strength
-
-      const totalOffset = clickOffset + hoverOffset
-      baseState = {
-        ...baseState,
-        x: baseState.x + Math.cos(particle.theta) * totalOffset,
-        y: baseState.y + Math.sin(particle.theta) * totalOffset,
-      }
-    }
-
-    // Stage 1 互動效果（進入 Stage 1 後啟用）
-    const stage1Strength = Math.min(1, Math.max(0, progress - 0.3) / 0.7)
-
-    if (stage1Strength > 0) {
-      // Effect A: 磁力排斥
-      const repulsion = calculateMagneticRepulsion(
-        { x: baseState.x, y: baseState.y },
-        context.mouse
-      )
-      baseState.x += repulsion.dx * stage1Strength
-      baseState.y += repulsion.dy * stage1Strength
-
-      // Effect D: 點擊波紋
-      const rippleOffset = calculateRippleWaveOffset(
-        { x: baseState.x, y: baseState.y },
-        rippleWaveRef.current,
-        context.time
-      )
-      baseState.x += rippleOffset.dx * stage1Strength
-      baseState.y += rippleOffset.dy * stage1Strength
-
-      // 波紋時粒子發光增強
-      if (rippleOffset.intensity > 0) {
-        baseState.glow = (baseState.glow || 5) * (1 + rippleOffset.intensity * 0.5)
-      }
-    }
-
-    // Stage 3 使用純白色，不套用顏色循環
-    // 計算 Stage 3 的強度（progress >= 2 開始過渡到 Stage 3）
-    const stage3Strength = Math.max(0, Math.min(1, progress - 2))
-
-    if (stage3Strength >= 1) {
-      // Stage 3 完全進入：使用純白色
-      baseState.color = 'white'
-    } else {
-      // Stage 0-2: 動態循環顏色（每個粒子有不同的相位偏移）
-      // 使用 theta 作為偏移，讓相鄰粒子有相近但不同的顏色
-      const colorOffset = particle.theta / (Math.PI * 2) // 0-1 基於角度位置
-
-      // 使用 easing 讓顏色過渡更自然
-      const colorProgress = easeInOutCubic(Math.min(progress, 1))
-
-      // 從白色漸變到循環顏色，週期 8 秒
-      const cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, 8)
-
-      if (stage3Strength > 0) {
-        // Stage 2→3 過渡中：從循環顏色漸變回白色
-        // 使用 easing 讓過渡更平滑
-        const fadeToWhite = easeInOutCubic(stage3Strength)
-        // 透過降低飽和度和提高亮度來漸變回白色
-        const fadedColorProgress = colorProgress * (1 - fadeToWhite)
-        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, 8)
-      } else {
-        baseState.color = cycleColor
-      }
-    }
-
-    return baseState
-  }
-
-  /**
-   * 計算場景狀態（中心光核等）
-   */
-  const computeSceneState = (context: TransformContext): SceneState => {
-    const progress = scrollProgressRef.current
-
-    // 計算當前在哪兩個 Stage 之間
-    const stageIndex = Math.floor(progress)
-    const stageProgress = progress - stageIndex
-
-    const currentStage = STAGES[Math.min(stageIndex, STAGES.length - 1)]
-    const nextStage = STAGES[Math.min(stageIndex + 1, STAGES.length - 1)]
-
-    // 獲取兩個 Stage 的場景狀態
-    const currentSceneState = currentStage.sceneState(context)
-    const nextSceneState = nextStage.sceneState(context)
-
-    // 插值過渡
-    if (stageIndex >= STAGES.length - 1 || stageProgress === 0) {
-      return currentSceneState
-    }
-
-    return interpolateSceneState(currentSceneState, nextSceneState, stageProgress)
-  }
-
-  /**
    * 更新所有粒子
    */
   const updateAllParticles = (time: number) => {
@@ -266,7 +127,12 @@ export default function ParticleCanvas() {
     dotsRef.current.forEach((dot, i) => {
       if (!dot) return
 
-      const state = computeParticleState(i, context)
+      const state = computeParticleState({
+        particleIndex: i,
+        context,
+        scrollProgress: scrollProgressRef.current,
+        rippleWave: rippleWaveRef.current,
+      })
 
       // 記錄位置（用於拖尾）
       recordPosition(i, state.x, state.y)
@@ -294,12 +160,10 @@ export default function ParticleCanvas() {
       // 更新光暈覆蓋層粒子位置和顏色
       const glowDot = glowDotsRef.current[i]
       if (glowDot) {
-        // 光暈粒子跟隨主粒子，但大小會脈動
         const pulseSize = 6 + pulseValueRef.current * 4
         glowDot.setAttribute('cx', String(state.x))
         glowDot.setAttribute('cy', String(state.y))
         glowDot.setAttribute('r', String(pulseSize))
-        // 光暈顏色也跟隨循環（使用完整飽和度）
         const glowColor = cycleColors(context.time, particles[i].theta / (Math.PI * 2), 8)
         glowDot.setAttribute('fill', glowColor)
       }
@@ -312,7 +176,6 @@ export default function ParticleCanvas() {
         const trails = getTrailPoints(i, trailLength, state.opacity, state.r)
         const circles = trailGroup.children
 
-        // 更新現有 circle 或創建新的
         trails.forEach((trail, idx) => {
           let circle = circles[idx] as SVGCircleElement | undefined
 
@@ -328,12 +191,10 @@ export default function ParticleCanvas() {
           circle.setAttribute('fill', state.color || 'white')
         })
 
-        // 移除多餘的 circles
         while (circles.length > trails.length) {
           trailGroup.removeChild(circles[circles.length - 1])
         }
       } else if (trailGroup) {
-        // 無拖尾時清空
         while (trailGroup.firstChild) {
           trailGroup.removeChild(trailGroup.firstChild)
         }
@@ -343,37 +204,31 @@ export default function ParticleCanvas() {
     // 更新光暈強度（基於滾動進度）
     const progress = scrollProgressRef.current
     if (mainGroupRef.current) {
-      // Stage 3 無光暈，Stage 1-2 使用強光暈，Stage 0 使用基礎光暈
       let filterValue = 'url(#glow)'
       if (progress >= 2.5) {
-        // Stage 3: 完全無光暈
         filterValue = 'none'
       } else if (progress >= 2) {
-        // Stage 2→3 過渡：漸漸減弱光暈（仍使用基礎光暈）
         filterValue = 'url(#glow)'
       } else if (progress > 0.3) {
-        // Stage 1-2: 使用更強的光暈
         filterValue = 'url(#glow-intense)'
       }
       mainGroupRef.current.setAttribute('filter', filterValue)
     }
 
-    // 更新光暈覆蓋層透明度（脈動效果）
-    // Stage 3 無光暈覆蓋層
+    // 更新光暈覆蓋層透明度
     if (glowOverlayRef.current) {
       const pulseIntensity = pulseValueRef.current
-      // 在 Stage 2→3 過渡時漸漸消失
       const stage3Fade = progress >= 2 ? Math.max(0, 1 - (progress - 2)) : 1
       const glowOpacity = progress * 0.3 * (0.5 + pulseIntensity * 0.5) * stage3Fade
       glowOverlayRef.current.setAttribute('opacity', String(glowOpacity))
     }
 
-    // 更新場景狀態（中心光核等）
-    const newSceneState = computeSceneState(context)
+    // 更新場景狀態
+    const newSceneState = computeSceneState(context, scrollProgressRef.current)
     setSceneState(newSceneState)
     timeRef.current = time
 
-    // 計算光核互動強度 (Effect F)
+    // 計算光核互動強度
     coreInteractionRef.current = calculateCoreInteraction(mouseRef.current, center)
 
     // 檢查波紋是否已結束
@@ -415,7 +270,7 @@ export default function ParticleCanvas() {
       })
     }
 
-    // Stage 1: 波紋擴散效果 (Effect D)
+    // Stage 1: 波紋擴散效果
     if (progress > 0.3) {
       rippleWaveRef.current = {
         x: clickPoint.x,
@@ -425,36 +280,6 @@ export default function ParticleCanvas() {
       }
     }
   }
-
-  // 設置 ScrollTrigger
-  useGSAP(() => {
-    if (!containerRef.current) return
-
-    // 計算每個 Stage 的吸附點
-    const snapIncrement = 1 / (STAGES.length - 1)  // 0, 0.33, 0.67, 1
-
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.5,
-      // 滾動吸附設置
-      snap: {
-        snapTo: snapIncrement,  // 每 33% 吸附一次
-        duration: { min: 0.2, max: 0.6 },  // 吸附動畫時長
-        delay: 0.1,  // 停止滾動後延遲開始吸附
-        ease: 'power2.inOut',  // 吸附動畫曲線
-      },
-      onUpdate: (self) => {
-        // 將滾動進度映射到 Stage (0-1 = Stage 0→1)
-        scrollProgressRef.current = self.progress * (STAGES.length - 1)
-      },
-    })
-
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill())
-    }
-  }, { scope: containerRef })
 
   // 主動畫循環
   useGSAP(() => {
@@ -477,7 +302,7 @@ export default function ParticleCanvas() {
         })
       }
 
-      // 強化光暈脈動動畫 - 更快的節奏
+      // 強化光暈脈動動畫
       if (glowIntensityRef.current) {
         gsap.to(glowIntensityRef.current, {
           attr: { stdDeviation: 15 },
@@ -488,7 +313,7 @@ export default function ParticleCanvas() {
         })
       }
 
-      // 脈動值動畫（用於控制其他效果）
+      // 脈動值動畫
       const pulseObj = { value: 0 }
       gsap.to(pulseObj, {
         value: 1,
@@ -523,9 +348,9 @@ export default function ParticleCanvas() {
     <div
       ref={containerRef}
       className="relative bg-black"
-      style={{ height: '400vh' }} // 足夠的滾動空間（4 個 Stage）
+      style={{ height: '400vh' }}
     >
-      {/* Sticky 容器：固定在視窗中 */}
+      {/* Sticky 容器 */}
       <div
         ref={stickyRef}
         className="sticky top-0 w-full h-screen overflow-hidden cursor-pointer"
@@ -533,54 +358,9 @@ export default function ParticleCanvas() {
       >
         {center.x > 0 && (
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            <defs>
-              {/* 基礎光暈濾鏡 */}
-              <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-                <feGaussianBlur
-                  ref={glowRef}
-                  in="SourceGraphic"
-                  stdDeviation="4"
-                  result="blur"
-                />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
+            <SVGFilters glowRef={glowRef} glowIntensityRef={glowIntensityRef} />
 
-              {/* 強化脈動光暈濾鏡 - 用於 Stage 1 */}
-              <filter id="glow-intense" x="-150%" y="-150%" width="400%" height="400%">
-                {/* 內層光暈 - 較小較亮 */}
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="3"
-                  result="blur1"
-                />
-                {/* 中層光暈 - 主要脈動層 */}
-                <feGaussianBlur
-                  ref={glowIntensityRef}
-                  in="SourceGraphic"
-                  stdDeviation="8"
-                  result="blur2"
-                />
-                {/* 外層光暈 - 最大範圍 */}
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="15"
-                  result="blur3"
-                />
-                <feMerge>
-                  <feMergeNode in="blur3" />
-                  <feMergeNode in="blur2" />
-                  <feMergeNode in="blur2" />
-                  <feMergeNode in="blur1" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* 額外的光暈覆蓋層（脈動效果） */}
+            {/* 光暈覆蓋層 */}
             <g ref={glowOverlayRef} filter="url(#glow-intense)" opacity="0">
               {particles.map((particle, i) => {
                 const pos = getInitialPosition(i)
@@ -597,7 +377,7 @@ export default function ParticleCanvas() {
               })}
             </g>
 
-            {/* 中心光核 (Effect F) - 渲染在最底層 */}
+            {/* 中心光核 */}
             {sceneState?.core && (
               <CoreGlow
                 state={sceneState.core}
@@ -609,7 +389,7 @@ export default function ParticleCanvas() {
 
             {/* 主粒子層 */}
             <g ref={mainGroupRef} filter="url(#glow)">
-              {/* 拖尾 groups（渲染在主粒子後面） */}
+              {/* 拖尾 */}
               {particles.map((particle, i) => (
                 <g
                   key={`trail-${particle.id}`}
@@ -617,7 +397,7 @@ export default function ParticleCanvas() {
                 />
               ))}
 
-              {/* 主粒子 - 圓形 */}
+              {/* 圓形粒子 */}
               {particles.map((particle, i) => {
                 const pos = getInitialPosition(i)
                 return (
@@ -632,7 +412,7 @@ export default function ParticleCanvas() {
                 )
               })}
 
-              {/* 主粒子 - 方形 */}
+              {/* 方形粒子 */}
               {particles.map((particle, i) => {
                 const pos = getInitialPosition(i)
                 return (
@@ -664,10 +444,8 @@ export default function ParticleCanvas() {
           SCROLL TO EXPLORE
         </div>
 
-        {/* Debug: 顯示當前進度 */}
-        <div className="absolute top-4 right-4 text-white/30 font-mono text-xs">
-          Stage: {Math.floor(scrollProgressRef.current)} | Progress: {(scrollProgressRef.current % 1 * 100).toFixed(0)}%
-        </div>
+        {/* Debug UI */}
+        <StageDebugger scrollProgress={scrollProgressRef.current} />
       </div>
     </div>
   )
