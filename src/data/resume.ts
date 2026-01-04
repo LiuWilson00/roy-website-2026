@@ -51,7 +51,7 @@ export interface ResumeData {
 }
 
 // ===== 載入 Resume 資料 =====
-import resumeJson from '../../docs/new-resume/resume.json'
+import resumeJson from './resume.json'
 
 export const resumeData: ResumeData = resumeJson as ResumeData
 
