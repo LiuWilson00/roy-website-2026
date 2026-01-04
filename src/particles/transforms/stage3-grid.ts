@@ -1,18 +1,27 @@
 /**
  * Stage 3: Grid Wave (方陣波浪)
- * 粒子排列成 5×16 的方形網格
+ * 粒子排列成 5×16 的方形網格（桌面版）或 5×8（手機版）
  * 單一波浪由上而下傳遞，被激發的方格會縮小
  */
 
 import type { Particle, ParticleState, TransformContext, SceneState } from '../types'
 import { DEFAULT_CORE_STATE } from '../types'
+import { detectMobile } from '../../hooks/useIsMobile'
 
-// 網格配置
+// 網格配置（桌面版）
 export const GRID_CONFIG = {
   cols: 5,          // 列數
   rows: 16,         // 行數
-  cellSize: 28,     // 單元格基礎大小（增大）
+  cellSize: 28,     // 單元格基礎大小
   gap: 10,          // 間距
+}
+
+// 網格配置（手機版 - 放大方塊、加大間距）
+export const GRID_CONFIG_MOBILE = {
+  cols: 5,          // 列數（維持）
+  rows: 8,          // 行數（40 粒子 / 5 列）
+  cellSize: 36,     // 單元格基礎大小（放大）
+  gap: 16,          // 間距（加大 Y 軸視覺效果）
 }
 
 // 波浪配置
@@ -23,9 +32,26 @@ export const WAVE_CONFIG = {
   pauseDuration: 2.5,   // 波浪結束後暫停時間（秒）
 }
 
+// 波浪配置（手機版 - 較快的波浪）
+export const WAVE_CONFIG_MOBILE = {
+  width: 2,             // 波浪寬度（較窄，因為行數少）
+  shrinkAmount: 0.6,    // 收縮比例
+  waveDuration: 2,      // 波浪掃過時間（較快）
+  pauseDuration: 2,     // 暫停時間
+}
+
+// 取得當前網格配置
+function getGridConfig() {
+  return detectMobile() ? GRID_CONFIG_MOBILE : GRID_CONFIG
+}
+
+// 取得當前波浪配置
+function getWaveConfig() {
+  return detectMobile() ? WAVE_CONFIG_MOBILE : WAVE_CONFIG
+}
+
 // Stage 3 配置
 export const STAGE3_CONFIG = {
-  baseSize: GRID_CONFIG.cellSize * 0.55,  // 方格基礎大小（增大）
   glowBase: 0,          // 無光暈
   glowWave: 0,          // 波浪時也無光暈
 }
@@ -34,9 +60,10 @@ export const STAGE3_CONFIG = {
  * 根據粒子 ID 取得網格位置
  */
 function getGridPosition(particleId: number): { row: number; col: number } {
+  const gridConfig = getGridConfig()
   return {
-    row: Math.floor(particleId / GRID_CONFIG.cols),  // 0-15
-    col: particleId % GRID_CONFIG.cols,              // 0-4
+    row: Math.floor(particleId / gridConfig.cols),
+    col: particleId % gridConfig.cols,
   }
 }
 
@@ -44,7 +71,7 @@ function getGridPosition(particleId: number): { row: number; col: number } {
  * 將網格座標轉換為螢幕座標
  */
 function gridToScreen(row: number, col: number, center: { x: number; y: number }): { x: number; y: number } {
-  const { cols, rows, cellSize, gap } = GRID_CONFIG
+  const { cols, rows, cellSize, gap } = getGridConfig()
 
   // 計算網格總尺寸
   const totalWidth = cols * cellSize + (cols - 1) * gap
@@ -65,8 +92,10 @@ function calculateTopDownWaveEffect(
   row: number,
   time: number
 ): number {
-  const { width, waveDuration, pauseDuration } = WAVE_CONFIG
-  const { rows } = GRID_CONFIG
+  const waveConfig = getWaveConfig()
+  const gridConfig = getGridConfig()
+  const { width, waveDuration, pauseDuration } = waveConfig
+  const { rows } = gridConfig
 
   // 總週期 = 波浪時間 + 暫停時間
   const totalPeriod = waveDuration + pauseDuration
@@ -103,7 +132,8 @@ export function stage3Transform(
   context: TransformContext
 ): ParticleState {
   const { time, center } = context
-  const config = STAGE3_CONFIG
+  const gridConfig = getGridConfig()
+  const waveConfig = getWaveConfig()
 
   // 計算網格位置
   const { row, col } = getGridPosition(particle.id)
@@ -112,9 +142,9 @@ export function stage3Transform(
   // 計算由上而下的波浪效果
   const waveIntensity = calculateTopDownWaveEffect(row, time)
 
-  // 基礎大小與波浪縮放
-  const baseSize = config.baseSize
-  const currentSize = baseSize * (1 - waveIntensity * WAVE_CONFIG.shrinkAmount)
+  // 基礎大小與波浪縮放（根據裝置動態計算）
+  const baseSize = gridConfig.cellSize * 0.55
+  const currentSize = baseSize * (1 - waveIntensity * waveConfig.shrinkAmount)
 
   // 波浪時稍微向上抬起
   const liftAmount = waveIntensity * -4
