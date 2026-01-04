@@ -11,6 +11,7 @@ import { useParticleSystem } from '../hooks/useParticleSystem'
 import { useMousePosition } from '../hooks/useMousePosition'
 import { useScrollProgress } from '../hooks/useScrollProgress'
 import { useStageComputation, type StageDefinition } from '../hooks/useStageComputation'
+import { usePerformanceSettings } from '../hooks/usePerformanceSettings'
 import CoreGlow from './CoreGlow'
 import SVGFilters from './SVGFilters'
 import StageDebugger from './StageDebugger'
@@ -56,9 +57,19 @@ export default function ParticleCanvas() {
   const glowIntensityRef = useRef<SVGFEGaussianBlurElement>(null)
   const pulseValueRef = useRef(0)
 
-  // 粒子系統
+  // 效能設定（方案 6：根據裝置調整）
+  const perfSettings = usePerformanceSettings()
+
+  // 幀計數器（方案 2：節流用）
+  const frameCountRef = useRef(0)
+
+  // 上次 State 更新的進度值（方案 5：減少更新頻率）
+  const lastDisplayProgressRef = useRef(0)
+  const lastSceneStateProgressRef = useRef(0)
+
+  // 粒子系統（使用效能設定的粒子數量）
   const { particles, triggerRipple, getClickOffset, recordPosition, getTrailPoints } = useParticleSystem({
-    count: 80,
+    count: perfSettings.particleCount,
     baseRadius: 180,
   })
 
@@ -140,6 +151,12 @@ export default function ParticleCanvas() {
   const updateAllParticles = (time: number) => {
     if (center.x === 0) return
 
+    // 方案 2：幀節流 - 手機版每 N 幀更新一次
+    frameCountRef.current++
+    if (frameCountRef.current % perfSettings.updateEveryNFrames !== 0) {
+      return
+    }
+
     const context: TransformContext = {
       time,
       mouse: mouseRef.current,
@@ -181,46 +198,50 @@ export default function ParticleCanvas() {
         rect.setAttribute('fill', state.color || 'white')
       }
 
-      // 更新光暈覆蓋層粒子位置和顏色
-      const glowDot = glowDotsRef.current[i]
-      if (glowDot) {
-        const pulseSize = 6 + pulseValueRef.current * 4
-        glowDot.setAttribute('cx', String(state.x))
-        glowDot.setAttribute('cy', String(state.y))
-        glowDot.setAttribute('r', String(pulseSize))
-        const glowColor = cycleColors(context.time, particles[i].theta / (Math.PI * 2), 8)
-        glowDot.setAttribute('fill', glowColor)
+      // 更新光暈覆蓋層粒子位置和顏色（手機版可停用）
+      if (perfSettings.enableGlowOverlay) {
+        const glowDot = glowDotsRef.current[i]
+        if (glowDot) {
+          const pulseSize = 6 + pulseValueRef.current * 4
+          glowDot.setAttribute('cx', String(state.x))
+          glowDot.setAttribute('cy', String(state.y))
+          glowDot.setAttribute('r', String(pulseSize))
+          const glowColor = cycleColors(context.time, particles[i].theta / (Math.PI * 2), 8)
+          glowDot.setAttribute('fill', glowColor)
+        }
       }
 
-      // 更新拖尾
-      const trailLength = state.trailLength ?? 0
-      const trailGroup = trailGroupsRef.current[i]
+      // 更新拖尾（手機版可停用）
+      if (perfSettings.enableTrails) {
+        const trailLength = state.trailLength ?? 0
+        const trailGroup = trailGroupsRef.current[i]
 
-      if (trailGroup && trailLength > 0) {
-        const trails = getTrailPoints(i, trailLength, state.opacity, state.r)
-        const circles = trailGroup.children
+        if (trailGroup && trailLength > 0) {
+          const trails = getTrailPoints(i, trailLength, state.opacity, state.r)
+          const circles = trailGroup.children
 
-        trails.forEach((trail, idx) => {
-          let circle = circles[idx] as SVGCircleElement | undefined
+          trails.forEach((trail, idx) => {
+            let circle = circles[idx] as SVGCircleElement | undefined
 
-          if (!circle) {
-            circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-            trailGroup.appendChild(circle)
+            if (!circle) {
+              circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+              trailGroup.appendChild(circle)
+            }
+
+            circle.setAttribute('cx', String(trail.x))
+            circle.setAttribute('cy', String(trail.y))
+            circle.setAttribute('r', String(trail.size))
+            circle.setAttribute('opacity', String(trail.opacity))
+            circle.setAttribute('fill', state.color || 'white')
+          })
+
+          while (circles.length > trails.length) {
+            trailGroup.removeChild(circles[circles.length - 1])
           }
-
-          circle.setAttribute('cx', String(trail.x))
-          circle.setAttribute('cy', String(trail.y))
-          circle.setAttribute('r', String(trail.size))
-          circle.setAttribute('opacity', String(trail.opacity))
-          circle.setAttribute('fill', state.color || 'white')
-        })
-
-        while (circles.length > trails.length) {
-          trailGroup.removeChild(circles[circles.length - 1])
-        }
-      } else if (trailGroup) {
-        while (trailGroup.firstChild) {
-          trailGroup.removeChild(trailGroup.firstChild)
+        } else if (trailGroup) {
+          while (trailGroup.firstChild) {
+            trailGroup.removeChild(trailGroup.firstChild)
+          }
         }
       }
     })
@@ -247,13 +268,22 @@ export default function ParticleCanvas() {
       glowOverlayRef.current.setAttribute('opacity', String(glowOpacity))
     }
 
-    // 更新場景狀態
-    const newSceneState = computeSceneState(context, scrollProgressRef.current)
-    setSceneState(newSceneState)
+    // 方案 5：減少 State 更新頻率 - 只在變化超過閾值時更新
+    const currentProgress = scrollProgressRef.current
+
+    // 更新場景狀態（使用較寬鬆的閾值）
+    if (Math.abs(currentProgress - lastSceneStateProgressRef.current) > perfSettings.stateUpdateThreshold * 5) {
+      const newSceneState = computeSceneState(context, currentProgress)
+      setSceneState(newSceneState)
+      lastSceneStateProgressRef.current = currentProgress
+    }
     timeRef.current = time
 
-    // 更新顯示進度（用於 UI）
-    setDisplayProgress(scrollProgressRef.current)
+    // 更新顯示進度（用於 UI）- 使用閾值控制更新頻率
+    if (Math.abs(currentProgress - lastDisplayProgressRef.current) > perfSettings.stateUpdateThreshold) {
+      setDisplayProgress(currentProgress)
+      lastDisplayProgressRef.current = currentProgress
+    }
 
     // 計算光核互動強度
     coreInteractionRef.current = calculateCoreInteraction(mouseRef.current, center)
@@ -387,22 +417,24 @@ export default function ParticleCanvas() {
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             <SVGFilters glowRef={glowRef} glowIntensityRef={glowIntensityRef} />
 
-            {/* 光暈覆蓋層 */}
-            <g ref={glowOverlayRef} filter="url(#glow-intense)" opacity="0">
-              {particles.map((particle, i) => {
-                const pos = getInitialPosition(i)
-                return (
-                  <circle
-                    key={`glow-${particle.id}`}
-                    ref={(el) => { glowDotsRef.current[i] = el }}
-                    cx={pos.x}
-                    cy={pos.y}
-                    r={6}
-                    fill="white"
-                  />
-                )
-              })}
-            </g>
+            {/* 光暈覆蓋層（手機版停用以提升效能） */}
+            {perfSettings.enableGlowOverlay && (
+              <g ref={glowOverlayRef} filter="url(#glow-intense)" opacity="0">
+                {particles.map((particle, i) => {
+                  const pos = getInitialPosition(i)
+                  return (
+                    <circle
+                      key={`glow-${particle.id}`}
+                      ref={(el) => { glowDotsRef.current[i] = el }}
+                      cx={pos.x}
+                      cy={pos.y}
+                      r={6}
+                      fill="white"
+                    />
+                  )
+                })}
+              </g>
+            )}
 
             {/* 中心光核 */}
             {sceneState?.core && (
