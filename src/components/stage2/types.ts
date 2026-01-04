@@ -69,13 +69,17 @@ export const STAGE2_VISIBILITY = {
 }
 
 // 每頁星球數量
-export const PLANETS_PER_PAGE = 3
+export const PLANETS_PER_PAGE_DESKTOP = 5
+export const PLANETS_PER_PAGE_MOBILE = 3
+export const PLANETS_PER_PAGE = 3 // 保留向後兼容
 
-// 固定的三個星球位置（桌面版）
+// 固定的星球位置（桌面版 - 5 個星球）
 export const PLANET_POSITIONS: PlanetPosition[] = [
-  { x: 20, y: 45, size: 'lg' },   // 左側
-  { x: 50, y: 35, size: 'xl' },   // 中間（最大）
-  { x: 80, y: 50, size: 'md' },   // 右側
+  { x: 12, y: 40, size: 'md' },   // 左上
+  { x: 32, y: 55, size: 'lg' },   // 左下
+  { x: 50, y: 32, size: 'xl' },   // 中間（最大）
+  { x: 68, y: 58, size: 'lg' },   // 右下
+  { x: 88, y: 38, size: 'md' },   // 右上
 ]
 
 // 固定的三個星球位置（手機版 - 垂直堆疊佈局，X 軸微偏移）

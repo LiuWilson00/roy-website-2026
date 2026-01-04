@@ -117,9 +117,15 @@ export function parseHSLCached(hslString: string): ParsedHSL | null {
 export function preCacheCommonColors(): void {
   const commonColors = [
     'white',
-    'hsl(180, 100%, 70%)',   // Cyan
-    'hsl(300, 100%, 70%)',   // Magenta
-    'hsl(240, 100%, 80%)',   // Blue-purple
+    // Stage 1 三色漸變
+    'hsl(180, 100%, 70%)',   // Cyan 青色
+    'hsl(300, 100%, 70%)',   // Magenta 洋紅
+    'hsl(240, 100%, 80%)',   // Blue-purple 藍紫
+    // Stage 2 藍色系
+    'hsl(193, 100%, 50%)',   // 主藍色 #00c8ff
+    'hsl(198, 100%, 48%)',   // 深藍色
+    'hsl(188, 100%, 52%)',   // 亮藍色
+    // 其他常用顏色
     'hsl(280, 100%, 80%)',   // Purple (core)
     'hsl(200, 100%, 85%)',   // Cyan (ray)
     'hsl(45, 100%, 70%)',    // Gold (sun core)

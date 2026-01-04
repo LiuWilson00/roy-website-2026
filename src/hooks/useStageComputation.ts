@@ -13,7 +13,7 @@ import {
   type RippleWaveState,
 } from '../particles/interactions'
 import { getBreathRadius } from '../particles/transforms'
-import { easeInOutCubic, cycleFromWhite } from '../utils/math'
+import { easeInOutCubic, cycleFromWhite, parseHSL, lerpHSL, CYCLE_COLORS, CYCLE_COLORS_BLUE } from '../utils/math'
 
 // Re-export for convenience
 export type { StageDefinition }
@@ -163,8 +163,31 @@ export function useStageComputation({
       // 使用 easing 讓顏色過渡更自然
       const colorProgress = easeInOutCubic(Math.min(progress, 1))
 
-      // 從白色漸變到循環顏色
-      const cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration)
+      // 計算最終顏色
+      let cycleColor: string
+
+      if (progress < 1) {
+        // Stage 0→1: 純三色漸變
+        cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS)
+      } else if (progress < 2) {
+        // Stage 1→2: 從三色漸變平滑過渡到藍色系
+        const blendProgress = easeInOutCubic(progress - 1) // 0 at progress=1, 1 at progress=2
+        const colorFromThree = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS)
+        const colorFromBlue = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS_BLUE)
+
+        // 解析並混合兩種顏色
+        const fromHSL = parseHSL(colorFromThree)
+        const toHSL = parseHSL(colorFromBlue)
+
+        if (fromHSL && toHSL) {
+          cycleColor = lerpHSL(fromHSL, toHSL, blendProgress)
+        } else {
+          cycleColor = colorFromBlue
+        }
+      } else {
+        // Stage 2+: 純藍色系
+        cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS_BLUE)
+      }
 
       if (stage3Strength > 0) {
         // Stage 2→3 過渡中：從循環顏色漸變回白色
@@ -172,7 +195,7 @@ export function useStageComputation({
         const fadeToWhite = easeInOutCubic(stage3Strength)
         // 透過降低飽和度和提高亮度來漸變回白色
         const fadedColorProgress = colorProgress * (1 - fadeToWhite)
-        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, colorCycleDuration)
+        baseState.color = cycleFromWhite(context.time, colorOffset, fadedColorProgress, colorCycleDuration, CYCLE_COLORS_BLUE)
       } else {
         baseState.color = cycleColor
       }

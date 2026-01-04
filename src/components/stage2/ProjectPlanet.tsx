@@ -7,7 +7,7 @@ import { useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import type { Project, PlanetSize } from './types'
-import { GLOW_COLORS, SIZE_MAP, SIZE_MAP_MOBILE } from './types'
+import { SIZE_MAP, SIZE_MAP_MOBILE } from './types'
 
 interface ProjectPlanetProps {
   project: Project
@@ -37,7 +37,11 @@ export default function ProjectPlanet({
   // 根據裝置選擇尺寸
   const sizeMap = isMobile ? SIZE_MAP_MOBILE : SIZE_MAP
   const planetSize = sizeMap[size]
-  const colors = GLOW_COLORS[project.glowColor]
+  // 統一使用 Stage 3/4 的藍色 #00c8ff (rgb: 0, 200, 255)
+  const colors = {
+    primary: 'rgb(0, 200, 255)',
+    glow: 'rgba(0, 200, 255, 0.6)',
+  }
 
   // 懸浮動畫
   useGSAP(() => {
@@ -175,7 +179,7 @@ export default function ProjectPlanet({
         className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-xs tracking-wider uppercase transition-all duration-300 px-2 py-1 rounded"
         style={{
           top: `${planetSize + 8}px`,
-          color: colors.primary,
+          color: '#ffffff',
           opacity: isSelected || isHovered ? 1 : 0.8,
           textShadow: `0 0 8px ${colors.glow}, 0 0 16px rgba(0,0,0,0.8)`,
           backgroundColor: 'rgba(0, 0, 0, 0.6)',

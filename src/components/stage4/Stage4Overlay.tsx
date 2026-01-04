@@ -80,9 +80,20 @@ export default function Stage4Overlay({ scrollProgress }: Stage4OverlayProps) {
         </h2>
       </div>
 
-      {/* 聯絡卡片面板 - 垂直置中，手機版增加頂部空間 */}
-      <div className="absolute inset-0 flex items-center justify-center pt-20 pb-12 md:pt-20 md:pb-20">
+      {/* 聯絡卡片面板 - 桌面版垂直置中 */}
+      <div className="hidden md:flex absolute inset-0 items-center justify-center pt-20 pb-20">
         <div className="pointer-events-auto w-full">
+          <ContactPanel items={contactItems} animate={shouldAnimate} />
+        </div>
+      </div>
+
+      {/* 聯絡卡片面板 - 手機版限制高度可捲動 */}
+      <div className="md:hidden absolute inset-0 flex flex-col">
+        {/* 頂部間距 - 為兩行標題預留空間 */}
+        <div className="h-[100px] flex-shrink-0" />
+
+        {/* 內容區域 - 可捲動 */}
+        <div className="flex-1 overflow-y-auto min-h-0 pointer-events-auto pb-12">
           <ContactPanel items={contactItems} animate={shouldAnimate} />
         </div>
       </div>

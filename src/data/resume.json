@@ -198,6 +198,28 @@
   ],
   "portfolio": [
     {
+      "id": "laushu",
+      "name": "雲端記帳事務所",
+      "nameEn": "Laushu",
+      "description": "勞報單數位化與創業資源整合平台",
+      "descriptionEn": "Digital labor report & startup resource integration platform",
+      "tags": ["React", "Next.js", "NestJS"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/laushu.avif",
+      "link": "https://laushu.app/"
+    },
+    {
+      "id": "virsody",
+      "name": "線上策展平台",
+      "nameEn": "Virsody",
+      "description": "3D 虛擬展覽空間，支援圖片、影片、3D 模型展示",
+      "descriptionEn": "3D virtual exhibition space supporting images, videos & 3D models",
+      "tags": ["Vue 3", "NestJS", "3D"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/virsody.svg",
+      "link": "https://virsody.io/"
+    },
+    {
       "id": "mangachat",
       "name": "漫話日記",
       "nameEn": "MangaChat",
@@ -240,28 +262,6 @@
       "type": "web",
       "thumbnail": "/images/portfolio/tianwei_white.svg",
       "link": "https://tian-wei.tw/"
-    },
-    {
-      "id": "laushu",
-      "name": "雲端記帳事務所",
-      "nameEn": "Laushu",
-      "description": "勞報單數位化與創業資源整合平台",
-      "descriptionEn": "Digital labor report & startup resource integration platform",
-      "tags": ["React", "Next.js", "NestJS"],
-      "type": "web",
-      "thumbnail": "/images/portfolio/laushu.avif",
-      "link": "https://laushu.app/"
-    },
-    {
-      "id": "virsody",
-      "name": "線上策展平台",
-      "nameEn": "Virsody",
-      "description": "3D 虛擬展覽空間，支援圖片、影片、3D 模型展示",
-      "descriptionEn": "3D virtual exhibition space supporting images, videos & 3D models",
-      "tags": ["Vue 3", "NestJS", "3D"],
-      "type": "web",
-      "thumbnail": "/images/portfolio/virsody.svg",
-      "link": "https://virsody.io/"
     },
     {
       "id": "authme",

@@ -119,9 +119,12 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
       </div>
 
       {/* ===== 手機版佈局 (< md) ===== */}
-      <div className="md:hidden absolute inset-0 flex flex-col justify-end">
-        {/* 內容區域 - 自動高度 */}
-        <div className="relative mx-4 mb-4">
+      <div className="md:hidden absolute inset-0 flex flex-col">
+        {/* 頂部間距 - 為標題預留空間 */}
+        <div className="h-[70px] flex-shrink-0" />
+
+        {/* 內容區域 - 限制最大高度 */}
+        <div className="relative mx-4 flex-1 min-h-0 max-h-[calc(100vh-140px)]">
           {/* 玻璃背景 */}
           <div
             className="absolute inset-0 bg-black/80 border border-white/10 rounded-lg"
@@ -129,9 +132,9 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
           />
 
           {/* 內容容器 */}
-          <div className="relative z-10 px-4 py-4">
+          <div className="relative z-10 px-4 py-4 h-full flex flex-col">
             {/* Tab 切換按鈕 */}
-            <div className="flex justify-center gap-3 mb-4 pointer-events-auto">
+            <div className="flex justify-center gap-3 mb-4 pointer-events-auto flex-shrink-0">
               <button
                 onClick={() => setMobileTab('timeline')}
                 className={`
@@ -160,8 +163,8 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
               </button>
             </div>
 
-            {/* 內容 */}
-            <div className="pointer-events-auto">
+            {/* 內容 - 可捲動 */}
+            <div className="pointer-events-auto flex-1 overflow-y-auto min-h-0">
               {mobileTab === 'timeline' ? (
                 <Timeline
                   entries={timelineData}
@@ -179,7 +182,7 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
         </div>
 
         {/* 底部滑動提示 - 手機版可點擊 */}
-        <div className="text-center pb-4">
+        <div className="text-center py-4 flex-shrink-0">
           <button
             onClick={onNavigateNext}
             className="group flex flex-col items-center gap-2 mx-auto pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"

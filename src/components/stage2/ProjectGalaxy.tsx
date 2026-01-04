@@ -5,7 +5,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import type { Project } from './types'
-import { PLANETS_PER_PAGE, PLANET_POSITIONS, PLANET_POSITIONS_MOBILE } from './types'
+import { PLANETS_PER_PAGE_DESKTOP, PLANETS_PER_PAGE_MOBILE, PLANET_POSITIONS, PLANET_POSITIONS_MOBILE } from './types'
 import ProjectPlanet from './ProjectPlanet'
 import ProjectCard from './ProjectCard'
 import GalaxyNav from './GalaxyNav'
@@ -28,17 +28,18 @@ export default function ProjectGalaxy({
   // 檢測手機版
   const isMobile = useIsMobile()
 
-  // 根據裝置選擇位置配置
+  // 根據裝置選擇位置配置和每頁數量
   const positions = isMobile ? PLANET_POSITIONS_MOBILE : PLANET_POSITIONS
+  const planetsPerPage = isMobile ? PLANETS_PER_PAGE_MOBILE : PLANETS_PER_PAGE_DESKTOP
 
   // 計算總頁數
-  const totalPages = Math.ceil(projects.length / PLANETS_PER_PAGE)
+  const totalPages = Math.ceil(projects.length / planetsPerPage)
 
   // 當前頁的專案
   const currentProjects = useMemo(() => {
-    const start = currentPage * PLANETS_PER_PAGE
-    return projects.slice(start, start + PLANETS_PER_PAGE)
-  }, [currentPage, projects])
+    const start = currentPage * planetsPerPage
+    return projects.slice(start, start + planetsPerPage)
+  }, [currentPage, projects, planetsPerPage])
 
   // 找到選中的專案和位置
   const selectedProject = useMemo(() => {

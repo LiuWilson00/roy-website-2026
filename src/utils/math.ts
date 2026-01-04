@@ -156,11 +156,19 @@ export function lerpFromWhite(targetHSL: string, t: number): string {
 
 // ============ Color Cycling ============
 
-// 預設的三色循環配置
+// Stage 1 三色循環配置
 export const CYCLE_COLORS = [
   { h: 180, s: 100, l: 70 },  // Cyan 青色
   { h: 300, s: 100, l: 70 },  // Magenta 洋紅
   { h: 240, s: 100, l: 80 },  // Blue-purple 藍紫
+]
+
+// Stage 2 藍色系循環配置（使用 Stage 3/4 卡片的藍色 #00c8ff 為基準）
+// #00c8ff = hsl(193, 100%, 50%)
+export const CYCLE_COLORS_BLUE = [
+  { h: 193, s: 100, l: 50 },  // 主藍色 #00c8ff
+  { h: 198, s: 100, l: 48 },  // 深藍色（略偏藍）
+  { h: 188, s: 100, l: 52 },  // 亮藍色（略偏青）
 ]
 
 /**
@@ -199,16 +207,18 @@ export function cycleColors(
  * @param offset 相位偏移 (0-1)
  * @param colorProgress 顏色進度 (0=白色, 1=完全著色)
  * @param cycleDuration 循環週期（秒）
+ * @param colors 要循環的顏色陣列
  */
 export function cycleFromWhite(
   time: number,
   offset: number,
   colorProgress: number,
-  cycleDuration: number = 6
+  cycleDuration: number = 6,
+  colors: { h: number; s: number; l: number }[] = CYCLE_COLORS
 ): string {
   if (colorProgress <= 0) return 'white'
 
-  const targetColor = cycleColors(time, offset, cycleDuration)
+  const targetColor = cycleColors(time, offset, cycleDuration, colors)
   const target = parseHSL(targetColor)
   if (!target) return 'white'
 
