@@ -44,12 +44,20 @@ export const GLOW_COLORS: Record<GlowColor, { primary: string; glow: string }> =
   yellow: { primary: 'rgb(250, 204, 21)', glow: 'rgba(250, 204, 21, 0.6)' },
 }
 
-// 星球尺寸映射 (px)
+// 星球尺寸映射 (px) - 桌面版
 export const SIZE_MAP: Record<PlanetSize, number> = {
   sm: 50,
   md: 70,
   lg: 90,
   xl: 120,
+}
+
+// 星球尺寸映射 (px) - 手機版（縮小）
+export const SIZE_MAP_MOBILE: Record<PlanetSize, number> = {
+  sm: 45,
+  md: 60,
+  lg: 75,
+  xl: 95,
 }
 
 // Stage 2 可見性配置
@@ -63,9 +71,16 @@ export const STAGE2_VISIBILITY = {
 // 每頁星球數量
 export const PLANETS_PER_PAGE = 3
 
-// 固定的三個星球位置（每頁）
+// 固定的三個星球位置（桌面版）
 export const PLANET_POSITIONS: PlanetPosition[] = [
   { x: 20, y: 45, size: 'lg' },   // 左側
   { x: 50, y: 35, size: 'xl' },   // 中間（最大）
   { x: 80, y: 50, size: 'md' },   // 右側
+]
+
+// 固定的三個星球位置（手機版 - 垂直堆疊佈局，X 軸微偏移）
+export const PLANET_POSITIONS_MOBILE: PlanetPosition[] = [
+  { x: 55, y: 22.5, size: 'lg' },  // 頂部（偏右）
+  { x: 45, y: 47, size: 'lg' },    // 中間（偏左）
+  { x: 55, y: 71.5, size: 'lg' },  // 底部（偏右）
 ]

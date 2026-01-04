@@ -5,10 +5,27 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import type { Project } from './types'
-import { PLANETS_PER_PAGE, PLANET_POSITIONS } from './types'
+import { PLANETS_PER_PAGE, PLANET_POSITIONS, PLANET_POSITIONS_MOBILE } from './types'
 import ProjectPlanet from './ProjectPlanet'
 import ProjectCard from './ProjectCard'
 import GalaxyNav from './GalaxyNav'
+
+// 檢測是否為手機版
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  return isMobile
+}
 
 interface ProjectGalaxyProps {
   projects: Project[]
@@ -23,6 +40,12 @@ export default function ProjectGalaxy({
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [pageKey, setPageKey] = useState(0) // 用於強制重新渲染動畫
+
+  // 檢測手機版
+  const isMobile = useIsMobile()
+
+  // 根據裝置選擇位置配置
+  const positions = isMobile ? PLANET_POSITIONS_MOBILE : PLANET_POSITIONS
 
   // 計算總頁數
   const totalPages = Math.ceil(projects.length / PLANETS_PER_PAGE)
@@ -40,9 +63,9 @@ export default function ProjectGalaxy({
     if (index === -1) return null
     return {
       project: currentProjects[index],
-      position: PLANET_POSITIONS[index],
+      position: positions[index],
     }
-  }, [selectedId, currentProjects])
+  }, [selectedId, currentProjects, positions])
 
   // 頁面切換
   const goToPage = useCallback((page: number) => {
@@ -98,7 +121,7 @@ export default function ProjectGalaxy({
         }}
       >
         {currentProjects.map((project, index) => {
-          const position = PLANET_POSITIONS[index]
+          const position = positions[index]
           if (!position) return null
 
           return (
@@ -111,6 +134,7 @@ export default function ProjectGalaxy({
               isSelected={selectedId === project.id}
               onClick={() => handlePlanetClick(project.id)}
               delay={animate ? 0.1 + index * 0.15 : 0}
+              isMobile={isMobile}
             />
           )
         })}

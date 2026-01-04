@@ -7,7 +7,7 @@ import { useRef, useState } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import type { Project, PlanetSize } from './types'
-import { GLOW_COLORS, SIZE_MAP } from './types'
+import { GLOW_COLORS, SIZE_MAP, SIZE_MAP_MOBILE } from './types'
 
 interface ProjectPlanetProps {
   project: Project
@@ -17,6 +17,7 @@ interface ProjectPlanetProps {
   isSelected: boolean
   onClick: () => void
   delay?: number     // 進場動畫延遲
+  isMobile?: boolean // 是否為手機版
 }
 
 export default function ProjectPlanet({
@@ -27,12 +28,15 @@ export default function ProjectPlanet({
   isSelected,
   onClick,
   delay = 0,
+  isMobile = false,
 }: ProjectPlanetProps) {
   const planetRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  const planetSize = SIZE_MAP[size]
+  // 根據裝置選擇尺寸
+  const sizeMap = isMobile ? SIZE_MAP_MOBILE : SIZE_MAP
+  const planetSize = sizeMap[size]
   const colors = GLOW_COLORS[project.glowColor]
 
   // 懸浮動畫
@@ -167,12 +171,14 @@ export default function ProjectPlanet({
 
       {/* 專案名稱標籤 */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-xs tracking-wider uppercase transition-all duration-300"
+        className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-xs tracking-wider uppercase transition-all duration-300 px-2 py-1 rounded"
         style={{
-          top: `${planetSize + 12}px`,
+          top: `${planetSize + 8}px`,
           color: colors.primary,
-          opacity: isSelected || isHovered ? 1 : 0.6,
-          textShadow: isSelected || isHovered ? `0 0 10px ${colors.glow}` : 'none',
+          opacity: isSelected || isHovered ? 1 : 0.8,
+          textShadow: `0 0 8px ${colors.glow}, 0 0 16px rgba(0,0,0,0.8)`,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(4px)',
         }}
       >
         {project.name}
