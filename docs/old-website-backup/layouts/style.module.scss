@@ -1,0 +1,67 @@
+.defaultLayout {
+  :global(.ant-layout-header) {
+    background-color: var(--main-background);
+    color: var(--main-text-color);
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    box-shadow: rgb(0 0 0 / 30%) 0px 3px 4px;
+    z-index: 100;
+    overflow: scroll;
+  }
+  .logoArea {
+    display: flex;
+    align-items: center;
+    .logo {
+      color: var(--sub-color);
+      font-weight: bolder;
+      font-size: larger;
+      border-style: double;
+      border-color: var(--sub-color);
+      padding: 10px 5px;
+      line-height: initial;
+    }
+  }
+  .menu {
+    display: flex;
+    overflow-x: hidden;
+    .menuItem {
+      margin: 0 10px;
+      cursor: pointer;
+      color: var(--menu-text-color);
+    }
+    .menuItem:hover {
+      color: var(--menu-text-active);
+      margin: 0 10px;
+      cursor: pointer;
+    }
+    .menuItem.selected {
+      color: var(--sub-color);
+    }
+  }
+}
+@media screen and (max-width: 480px) {
+  .defaultLayout {
+    :global(.ant-layout-header) {
+      background-color: var(--main-background);
+      color: var(--main-text-color);
+      display: flex;
+      justify-content: flex-start;
+      align-content: center;
+      box-shadow: rgb(0 0 0 / 30%) 0px 3px 4px;
+      z-index: 100;
+      overflow: hidden;
+      padding: 0px 0px;
+      .menu {
+        overflow: scroll;
+        .menuItem {
+          font-size: 12px;
+          margin: 0 5px;
+        }
+      }
+    }
+    .logoArea {
+      width: 120px;
+    }
+  }
+}

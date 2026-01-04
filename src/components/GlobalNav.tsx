@@ -6,6 +6,7 @@
 import { useState, useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { useLanguage, LANGUAGES, type Language } from '../i18n'
 
 interface GlobalNavProps {
   scrollProgress: number
@@ -24,6 +25,7 @@ export default function GlobalNav({ scrollProgress, onNavigate }: GlobalNavProps
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<(HTMLButtonElement | null)[]>([])
+  const { language, setLanguage } = useLanguage()
 
   // 當前 Stage
   const currentStage = Math.round(scrollProgress)
@@ -107,11 +109,29 @@ export default function GlobalNav({ scrollProgress, onNavigate }: GlobalNavProps
                 WebkitBackdropFilter: 'blur(16px)',
               }}
             >
-              {/* 選單標題 */}
-              <div className="px-5 py-3 border-b border-white/10">
+              {/* 選單標題與語言切換 */}
+              <div className="px-5 py-3 border-b border-white/10 flex items-center justify-between">
                 <p className="font-mono text-xs text-white/50 tracking-wider uppercase">
                   Navigation
                 </p>
+                {/* 語言切換按鈕 */}
+                <div className="flex gap-1">
+                  {(Object.keys(LANGUAGES) as Language[]).map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setLanguage(lang)}
+                      className={`
+                        px-2 py-1 font-mono text-xs rounded transition-all
+                        ${language === lang
+                          ? 'bg-cyan-400/20 text-cyan-400 border border-cyan-400/50'
+                          : 'text-white/50 hover:text-white/80 hover:bg-white/5'
+                        }
+                      `}
+                    >
+                      {LANGUAGES[lang].label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* 導航項目 */}

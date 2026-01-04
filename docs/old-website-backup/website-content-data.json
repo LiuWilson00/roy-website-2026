@@ -1,0 +1,181 @@
+{
+  "hero": {
+    "greeting": "I'M ROY LIU, A PROGRAMMER",
+    "subtitle": "BACKEND, FRONTEND, DEVOPS, a little bit of data science"
+  },
+  "introduction": {
+    "text": "我是一名軟體工程師，熟悉前端、後端開發，也有資料分析、機器學習、devOps的實務經驗，大學主修應用數學系，對任何最新的技術都充滿好奇心，由於興趣十分廣泛，除了軟體開發及統計以外我也有設計、美術、文字企劃的能力，同時我的自學能力也十分卓越，可以依照老闆的要求學習新的技術並應用在專案中，最後我也是一名擅長溝通的協調者、管理者，擅長在工作中建立良好的協作關係、團隊氛圍，由於生長過程的關係，我的抗壓性及適應性十分過人，可以在不同的工作環境中發揮，我相信我會是貴公司團隊的關鍵拼圖。"
+  },
+  "skills": [
+    {
+      "name": "FRONT END",
+      "value": 95,
+      "technologies": ["react", "Vue", "html/css/javascript", "JQuery"]
+    },
+    {
+      "name": "BACK END",
+      "value": 80,
+      "technologies": ["asp.net", "express", "django", "laravel", "mysql", "mssql", "mongodb"]
+    },
+    {
+      "name": "MOBILE",
+      "value": 75,
+      "technologies": ["react native", "swift", "Kotlin"]
+    },
+    {
+      "name": "DEVOPS",
+      "value": 70,
+      "technologies": ["centos", "red hat enterprise", "AWS", "GCP"]
+    },
+    {
+      "name": "UI/UX",
+      "value": 65,
+      "technologies": ["adobe XD", "adobe AI", "adobe PS", "procreate"]
+    },
+    {
+      "name": "DATA ANALYSE",
+      "value": 75,
+      "technologies": ["Calculus", "Linear algebra", "Statistics"]
+    },
+    {
+      "name": "Machine learning",
+      "value": 70,
+      "technologies": ["deep learning", "Reinforcement learning", "belief network", "Decision tree"]
+    },
+    {
+      "name": "Project management",
+      "value": 85,
+      "technologies": []
+    }
+  ],
+  "experience": [
+    {
+      "period": ["2012", "2016"],
+      "company": "PCCU",
+      "title": "Student",
+      "description": "就讀於文化大學數學系，由於家庭經濟狀況的因素，較晚入學，在校成績維持系上前三名，且積極參與多項統計、企劃比賽，且利用課餘時間自學app開發的技術，並且在求學期間參與多種不同的工作，養成跨領域的能力，雖然最後因家庭因素沒有畢業，但收穫了許多知識。"
+    },
+    {
+      "period": ["2016", "2017"],
+      "company": "行銷公司",
+      "title": "企劃專員",
+      "description": "由於大學時期有參與過大量的行銷實務經驗，畢業後就經由介紹在行銷公司就業，在行銷業雖然學到許多職場工作的技巧、溝通的技巧、簡報的能力，但由於在工作上得不到成就感、個人興趣等因素，最後還是毅然決然選擇辭職轉投入軟體業。"
+    },
+    {
+      "period": ["2017", "2018"],
+      "company": "桓基科技",
+      "title": "on site engineer",
+      "description": "一開始轉職軟體業進入的公司，讓我累積大量的實務經驗，由於剛轉職且並非CS本科系，所以沒有太多優秀的作品，所以起初的職務是簡單的現場維護工程師，主要是維護公家機關的HR系統，但在桓基就業的過程處理許多實務上的問題中，漸漸累積了開發的能力跟作品。"
+    },
+    {
+      "period": ["2018", "2019"],
+      "company": "YPCloud",
+      "title": "Frontend developer",
+      "description": "第一次參與前後端分離的公司，雖然過去工作是採用ASP.net，但在工作之餘有累積了許多前端框架的開發經驗，所以順利應徵到前端工程師的職務，公司主要業務是做SAAS的服務，由於公司的業務發展還在摸索階段，所以做了很多很新的技術，也得到了許多收穫。"
+    },
+    {
+      "period": ["2020", "2022"],
+      "company": "POYUE",
+      "title": "Frontend manager",
+      "description": "是公司前幾個應徵進來的RD，在工作過程漸漸受到技術部主管的賞賜，被賦予了前端團隊主管的職務，在工作過程中自己的能力也逐漸成長，由於是公司的前端主管所以除了要完成功能外，也要建立起團隊的開發架構、規範等，同時也得到很豐富的帶人經驗，和團隊成員、跨部門的同事相處十分融洽，由於公司是接案公司，案子五花八門所以也完成了許多不同領域的專案。"
+    },
+    {
+      "period": ["2022", "2023"],
+      "company": "Authme",
+      "title": "Frontend developer",
+      "description": "公司主要是研發KYC及相關應用，在公司內的主要業務是進行SDK的維護與開發，在剛進入公司就立即進入狀況解決web當下維運相關的問題，並且在sdk中引入框架、接手wasm的維護，以及實作KYC引擎的測試架構等，並且持續在多變創新的環境適應與成長。"
+    },
+    {
+      "period": ["2023", "2024"],
+      "company": "ICYBox",
+      "title": "Full stack developer",
+      "description": "公司主要是研發KYC及相關應用，在公司內的主要業務是進行SDK的維護與開發，在剛進入公司就立即進入狀況解決web當下維運相關的問題，並且在sdk中引入框架、接手wasm的維護，以及實作KYC引擎的測試架構等，並且持續在多變創新的環境適應與成長。"
+    },
+    {
+      "period": ["2025", "now"],
+      "company": "YTCloud",
+      "title": "Senior Frontend developer",
+      "description": "公司主要是研發KYC及相關應用，在公司內的主要業務是進行SDK的維護與開發，在剛進入公司就立即進入狀況解決web當下維運相關的問題，並且在sdk中引入框架、接手wasm的維護，以及實作KYC引擎的測試架構等，並且持續在多變創新的環境適應與成長。"
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "reflex",
+      "name": "運動數據",
+      "subtitle": "Reflex",
+      "description": "Reflex 運動數據分析.分享平台",
+      "type": "mobile+web",
+      "images": [
+        "image/portfolio/reflex/reflex2.png",
+        "image/portfolio/reflex/reflexPC4.png"
+      ]
+    },
+    {
+      "id": "chat",
+      "name": "聊天室",
+      "subtitle": "Chat room",
+      "description": "跨平台,低耦合性real time通信軟體",
+      "type": "mobile+web",
+      "images": [
+        "image/portfolio/chatroom/chatroomNormal.gif",
+        "image/portfolio/chatroom/chatroom.png"
+      ]
+    },
+    {
+      "id": "backstage",
+      "name": "數據管理平台",
+      "subtitle": "Backstage",
+      "description": "易操作、泛用的跨平台系統管理後台",
+      "type": "web",
+      "images": [
+        "image/portfolio/backstage/backstage2.png",
+        "image/portfolio/backstage/backstage3.png"
+      ]
+    },
+    {
+      "id": "hr",
+      "name": "HR系統",
+      "subtitle": "Human Resource Information System",
+      "description": "功能豐富的HR系統,包含差勤.薪資計算.總務系統。",
+      "type": "web",
+      "images": [
+        "image/portfolio/eip/approval.png",
+        "image/portfolio/eip/leave1.png",
+        "image/portfolio/eip/leave2.png"
+      ]
+    },
+    {
+      "id": "crypto",
+      "name": "交易所",
+      "subtitle": "Exchange",
+      "description": "包含一般交易.合約交易的虛擬貨幣交易平台",
+      "type": "mobile+web",
+      "images": [
+        "image/portfolio/crypto/crypto-pc1.png",
+        "image/portfolio/crypto/crypto-pc2.png",
+        "image/portfolio/crypto/crypto-mob4.png",
+        "image/portfolio/crypto/crypto-mob5.png"
+      ]
+    },
+    {
+      "id": "games",
+      "name": "遊戲平台",
+      "subtitle": "Game Center",
+      "description": "各種各樣的遊戲綜合站台.",
+      "type": "mobile",
+      "images": [
+        "image/portfolio/meta/home1.png",
+        "image/portfolio/blockLottery/home.png",
+        "image/portfolio/77lottery/home.png"
+      ]
+    }
+  ],
+  "contact": {
+    "email": "liuwei811007@gmail.com",
+    "line": "assss49",
+    "linkedin": "https://www.linkedin.com/in/wei-liu-86666b1b3/"
+  },
+  "footer": {
+    "copyright": "2021 by Roy Liu"
+  }
+}

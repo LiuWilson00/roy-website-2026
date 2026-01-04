@@ -1,0 +1,316 @@
+{
+  "personalInfo": {
+    "name": {
+      "chinese": "劉為",
+      "english": "Wei Liu",
+      "nickname": "Roy"
+    },
+    "gender": "男",
+    "age": 33,
+    "militaryService": {
+      "status": "役畢",
+      "date": "2013/7"
+    },
+    "contact": {
+      "phone": "0985-630-944",
+      "email": "assss49@yahoo.com.tw",
+      "address": "台北市南港區"
+    },
+    "licenses": [
+      "普通重型機車駕照",
+      "輕型機車駕照",
+      "普通小型車駕照"
+    ],
+    "tags": [
+      "開發者",
+      "資料科學",
+      "跨領域人才",
+      "樂觀主義者",
+      "強大適應力",
+      "快速學習新技術"
+    ]
+  },
+  "summary": "您好！我是劉為，是一名經驗豐富的開發者，擅長前端(React、Vue)、後端(Laravel、JavaSpringBoot、Express...)、移動端開發(React Native、Kotlin、Swift）同時我也是一位擅長溝通協調的人，也有團隊的帶領經驗，我會是貴公司需要的那個人！",
+  "education": [
+    {
+      "school": "私立中國文化大學",
+      "department": "應用數學系",
+      "degree": "大學肄業",
+      "period": {
+        "start": "2014/9",
+        "end": "2018/6"
+      }
+    },
+    {
+      "school": "大安高工",
+      "department": "冷凍空調科",
+      "degree": "高職畢業",
+      "period": {
+        "start": "2008/9",
+        "end": "2011/9"
+      }
+    }
+  ],
+  "workExperience": {
+    "totalYears": "7~8年",
+    "positions": [
+      {
+        "title": "資深全端工程師",
+        "company": "愛伯達股份有限公司",
+        "industry": "電子通訊／電腦週邊零售業",
+        "companySize": "1~30人",
+        "location": "台北市內湖區",
+        "period": {
+          "start": "2023/11",
+          "end": "仍在職"
+        },
+        "duration": null,
+        "management": "管理4人以下",
+        "responsibilities": [
+          "建置公司開發團隊(包含開發規範/gitflow/devOps)",
+          "系統架構設計(雲端架構/系統架構/軟體架構/整合各項外部服務)",
+          "資料彙整與分析(舊有資料的分析/資料轉換)",
+          "軟體開發與維護(包含前端/後端的開發)",
+          "LLM 的整合與應用",
+          "漸進式的重構設計與執行"
+        ],
+        "techStack": ["Node.js", "AWS", "RDBMS", "VueJS", "Laravel", "Python"]
+      },
+      {
+        "title": "前端工程師",
+        "company": "數位身分股份有限公司",
+        "industry": "其它軟體及網路相關業",
+        "companySize": "30~100人",
+        "location": "台北市大同區",
+        "period": {
+          "start": "2022/12",
+          "end": "2023/10"
+        },
+        "duration": "11個月",
+        "management": null,
+        "responsibilities": [
+          "維護及開發 SDK (React JS、typescript、RXJS)",
+          "後台專案管理 (Angular)",
+          "Web SDK 影像辨識效能及運算效能優化(WebGL、Web Worker)",
+          "wasm engine 維護 (C++)",
+          "前端 devOps (Docker、Github action、GCP)"
+        ],
+        "achievements": [
+          "將sdk成功引入現代前端框架",
+          "協助將產品導入各銀行模組",
+          "將wasm維護引入前端團隊",
+          "改善 web 前端 release 產品流程"
+        ],
+        "techStack": ["JavaScript", "HTML", "C++", "AngularJS", "TypeScript", "RXJS", "WebGL", "Web Worker", "Docker", "Github Actions", "GCP"]
+      },
+      {
+        "title": "資深前端工程師",
+        "company": "博悅網路科技有限公司",
+        "industry": "電腦軟體服務業",
+        "companySize": "30~100人",
+        "location": "台北市信義區",
+        "period": {
+          "start": "2020/5",
+          "end": "2022/12"
+        },
+        "duration": "2年8個月",
+        "management": "管理5~8人",
+        "responsibilities": [
+          "建置前端開發系統(Vue JS、React JS)",
+          "管理前端團隊(Frontend team lead)",
+          "建置跨平台解決方案(React native、Swift、Kotlin)",
+          "分析.運算產品商業數據(python data analyst)",
+          "Web 3 應用及合約開發",
+          "後端開發協助(Laravel)"
+        ],
+        "achievements": [
+          "規劃及開發多款即時互動遊戲 (跨平台)",
+          "規劃及開發客服及聊天軟體(跨平台、Web socket)",
+          "規劃及開發電競賽事轉播系統(Web、WebRTC)"
+        ],
+        "techStack": ["JavaScript", "ReactJS", "VueJS", "Python", "React Native", "Swift", "Kotlin", "Laravel", "Web3", "Solidity"]
+      },
+      {
+        "title": "工程師",
+        "company": "YPCloud",
+        "industry": "電腦軟體服務業",
+        "companySize": "1~30人",
+        "location": "台北市信義區",
+        "period": {
+          "start": "2020/2",
+          "end": "2020/5"
+        },
+        "duration": "4個月",
+        "management": null,
+        "responsibilities": [
+          "利用node.js 建立雲端系統UI (Express、Vue JS)",
+          "建置web base C2C 視訊系統(WebRTC、Web Socket)",
+          "建置CSS base簡易動畫設計系統(P5 JS)",
+          "建置視訊人臉辨識系統(Web RTC、Machine Learning)"
+        ],
+        "techStack": ["Node.js", "Express", "VueJS", "WebRTC", "Web Socket", "P5.js", "Machine Learning"]
+      },
+      {
+        "title": "工程師",
+        "company": "桓基科技股份有限公司",
+        "industry": "電腦軟體服務業",
+        "companySize": "100~500人",
+        "location": "台北市中正區",
+        "period": {
+          "start": "2018/9",
+          "end": "2019/11"
+        },
+        "duration": "1年3個月",
+        "management": null,
+        "responsibilities": [
+          "系統維護 (Asp.Net MVC)",
+          "資料庫維護(MS SQL)",
+          "系統測試與版本更新(IIS、Windows server)",
+          "與客戶協調專案開發進度",
+          "資料移轉與分析"
+        ],
+        "techStack": ["MS SQL", "C#", "ASP.NET", "IIS", "Windows Server"]
+      },
+      {
+        "title": "現場執行督導",
+        "company": "艾婕行銷",
+        "industry": "藝人／模特兒等經紀業",
+        "companySize": "1~30人",
+        "location": "台北市松山區",
+        "period": {
+          "start": "2017/1",
+          "end": "2017/12"
+        },
+        "duration": "1年",
+        "management": "管理5~8人",
+        "responsibilities": [
+          "管理現場showgirl.pg.pb(Promotional model)",
+          "與客戶及民眾、工作人員、廠商做溝通",
+          "現場狀況排除"
+        ],
+        "techStack": []
+      },
+      {
+        "title": "助教",
+        "company": "文化大學",
+        "industry": "大專校院教育事業",
+        "companySize": "1~30人",
+        "location": "台北市士林區",
+        "period": {
+          "start": "2016/6",
+          "end": "2017/6"
+        },
+        "duration": "1年1個月",
+        "management": null,
+        "responsibilities": [
+          "微積分.統計.計算機個人及團體輔導",
+          "教材整理及編寫"
+        ],
+        "techStack": []
+      },
+      {
+        "title": "工程師",
+        "company": "個人網站工作室",
+        "industry": "多媒體傳播相關業",
+        "companySize": "1~30人",
+        "location": "台北市南港區",
+        "period": {
+          "start": "2016/6",
+          "end": "2017/6"
+        },
+        "duration": "1年1個月",
+        "management": null,
+        "responsibilities": [],
+        "techStack": []
+      },
+      {
+        "title": "兼職活動督導",
+        "company": "海洋整合行銷",
+        "industry": "廣告行銷公關業",
+        "companySize": "1~30人",
+        "location": "台北市松山區",
+        "period": {
+          "start": "2016/1",
+          "end": "2018/1"
+        },
+        "duration": "2年1個月",
+        "management": null,
+        "responsibilities": [
+          "協助活動現場執行",
+          "管理及發派活動現場人力",
+          "事前人員配置及管理",
+          "協助製作活動簡報及人力報表",
+          "現場與客戶及民眾、廠商協調"
+        ],
+        "techStack": []
+      }
+    ]
+  },
+  "skills": {
+    "frontend": {
+      "languages": ["JavaScript", "TypeScript", "Kotlin", "Swift"],
+      "frameworks": ["ReactJS", "VueJS", "AngularJS", "jQuery", "NuxtJS", "NextJS", "ReactNative"],
+      "tags": ["Kotlin", "ReactNative", "SWIFT", "VueJS", "ReactJS", "Android", "iOS", "CSS", "HTML", "Node.js"]
+    },
+    "backend": {
+      "languages": ["JavaScript", "TypeScript", "C#", "C++", "Visual Basic", "Python", "Java", "PHP", "Kotlin"],
+      "databases": ["MySQL", "MS SQL", "MongoDB"],
+      "frameworks": ["Express.js", "ReactNative", "SpringBoot", "ASP.NET MVC", "Laravel", "Firebase"],
+      "tags": ["ASP.NET", "C++", "PHP", "MySQL", "MS SQL", "Java", "Python", "Linux", "Git", "Spring"]
+    },
+    "devops": {
+      "systems": ["Linux", "Docker"],
+      "servers": ["nginx", "apache", "IIS"],
+      "cloud": ["GCP", "Azure", "AWS"],
+      "containers": ["Docker", "Docker Compose"],
+      "tags": ["Linux", "IIS", "AWS", "Git"]
+    },
+    "other": {
+      "languages": ["R", "Python", "Solidity"],
+      "design": ["Photoshop", "Procreate"],
+      "frameworks": ["HardHat", "PyTorch", "TensorFlow"],
+      "specialties": ["資料分析", "機器學習", "區塊鏈應用"],
+      "tags": ["資料庫程式設計", "軟體程式設計", "Adobe Photoshop", "Machine Learning", "系統架構規劃", "視覺設計相關知識"]
+    }
+  },
+  "languages": {
+    "english": {
+      "listening": "略懂",
+      "speaking": "略懂",
+      "reading": "中等",
+      "writing": "中等"
+    },
+    "taiwanese": "略懂"
+  },
+  "jobPreferences": {
+    "type": ["全職工作", "兼職工作"],
+    "shift": ["日班", "可配合輪班"],
+    "availability": "錄取後隨時可上班",
+    "salary": "面議",
+    "location": "台北市",
+    "remote": "對遠端工作有意願",
+    "desiredTitles": ["軟體工程師", "前端工程師", "後端工程師", "軟體工程主管"],
+    "desiredCategories": ["軟體工程師", "軟體專案主管", "系統分析師", "Internet程式設計師", "電子商務技術主管"],
+    "desiredIndustries": ["網際網路相關業", "電腦軟體服務業", "電信及通訊相關業", "電腦系統整合服務業", "其它軟體及網路相關業"]
+  },
+  "autobiography": {
+    "introduction": "我是一名軟體工程師,有多年的開發、管理團隊經驗,熟悉前端、後端開發,擅長ReactJS、ReactNative、VueJS、ExpressJS、Laravel、SpringBoot,也有資料分析、機器學習、devOps的實務經驗。",
+    "education_background": "大學主修應用數學系,因此除了軟體專業,也熟悉解析、統計、機器學習等專業,在過去工作時也有多次應用在業務上的經驗,因為家境的關係大學半工半讀,卻在求學時都維持班上系上前三的成績,靠著獎學金貼補生活費,但大四時因為家中發生劇變只好肄業投入職場,也開始在開發的路上不斷前進。",
+    "cross_domain": "除了是一位開發者,我也擁有跨領域的能力,由於興趣十分廣泛,除了軟體開發及統計以外,由於在大學時為了賺取外快從事許多不同領域的工作,所以我也有設計、美術、文字企劃的能力。",
+    "self_learning": "同時我的自學能力也十分卓越,且對任何最新的技術都充滿好奇心,可以依照老闆的要求學習新的技術並應用在專案中,舉例來說我曾經因為專案需求,在兩週內自學swift並建構一個完整的iOS專案,且因為所有的專業技術都是自學,所以我上班之餘會持續不斷精進自己的技術,包含機器學習、區塊鏈、金融科技等在工作之餘都有學習且應用在工作中。",
+    "soft_skills": "最後我也是一名擅長溝通的協調者、管理者,擅長在工作中建立良好的協作關係、團隊氛圍,由於生長過程坎坷,我的抗壓性及適應性十分過人,可以在不同的工作環境中發揮,我相信我會是貴公司團隊的關鍵拼圖。"
+  },
+  "projects": [
+    {
+      "name": "個人履歷網站",
+      "description": "個人履歷網站,包含個人的學經歷及相關作品。有實作RWD,但建議在電腦查看可以有最好的體驗,部署於github pages。",
+      "platform": "GitHub Pages"
+    }
+  ],
+  "attachments": [
+    {
+      "name": "劉為2022履歷.pdf",
+      "description": "個人工作履歷簡報"
+    }
+  ]
+}

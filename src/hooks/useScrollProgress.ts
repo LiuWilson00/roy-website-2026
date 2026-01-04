@@ -44,13 +44,13 @@ export function useScrollProgress({
       trigger: containerRef.current,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 0.5,
+      scrub: 0.3,  // 更快響應滾動
       // 滾動吸附設置
       snap: {
         snapTo: snapIncrement,  // 每個 Stage 吸附一次
-        duration: { min: 0.2, max: 0.6 },  // 吸附動畫時長
-        delay: 0.1,  // 停止滾動後延遲開始吸附
-        ease: 'power2.inOut',  // 吸附動畫曲線
+        duration: { min: 0.15, max: 0.4 },  // 更快的吸附動畫
+        delay: 0.02,  // 幾乎立即開始吸附
+        ease: 'power3.out',  // 更靈敏的動畫曲線
       },
       onUpdate: (self) => {
         // 將滾動進度映射到 Stage

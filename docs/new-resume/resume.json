@@ -1,0 +1,354 @@
+{
+  "experience": [
+    {
+      "id": "beardo",
+      "company": "熊熊幹大事",
+      "companyEn": "Beardo",
+      "title": "深度技術夥伴",
+      "titleEn": "Deep Tech Partner",
+      "period": ["long-term"],
+      "responsibilities": [
+        "前後端系統開發",
+        "技術顧問",
+        "系統維運"
+      ],
+      "responsibilitiesEn": [
+        "Full-stack system development",
+        "Technical consulting",
+        "System operations & maintenance"
+      ],
+      "techStack": ["Next.js", "NestJS", "React", "AWS", "Docker"]
+    },
+    {
+      "id": "yuntong",
+      "company": "云桐科技",
+      "companyEn": "yt-game",
+      "title": "資深前端工程師",
+      "titleEn": "Senior Frontend Engineer",
+      "period": ["2023/11", "2026/01"],
+      "responsibilities": [
+        "多款遊戲前端開發",
+        "前端效能優化",
+        "通信穩定性優化"
+      ],
+      "responsibilitiesEn": [
+        "Frontend development for multiple games",
+        "Frontend performance optimization",
+        "Communication stability optimization"
+      ],
+      "techStack": ["React", "Next.js", "Three.js", "P5.js", "GSAP"]
+    },
+    {
+      "id": "aiboda",
+      "company": "愛伯達股份有限公司",
+      "companyEn": "icybox",
+      "title": "資深全端工程師",
+      "titleEn": "Senior Full Stack Engineer",
+      "period": ["2023/11", "now"],
+      "responsibilities": [
+        "建置開發團隊規範與 GitFlow、DevOps 流程",
+        "系統架構設計（雲端、軟體、外部服務整合）",
+        "舊有資料分析與轉換",
+        "LLM 整合應用開發",
+        "漸進式系統重構"
+      ],
+      "responsibilitiesEn": [
+        "Established team standards, GitFlow & DevOps workflows",
+        "System architecture design (cloud, software, external service integration)",
+        "Legacy data analysis & migration",
+        "LLM integration & application development",
+        "Progressive system refactoring"
+      ],
+      "techStack": ["Node.js", "AWS", "Vue", "Laravel", "Python"]
+    },
+    {
+      "id": "authme",
+      "company": "數位身分股份有限公司",
+      "companyEn": "Authme",
+      "title": "前端工程師",
+      "titleEn": "Frontend Engineer",
+      "period": ["2022/12", "2023/10"],
+      "responsibilities": [
+        "維護與開發 Web SDK（React、TypeScript、RxJS）",
+        "Angular 後台專案開發",
+        "WebGL、Web Worker 效能優化",
+        "WASM 引擎維護（C++）",
+        "前端 CI/CD 建置（Docker、GitHub Actions、GCP）"
+      ],
+      "responsibilitiesEn": [
+        "Web SDK maintenance & development (React, TypeScript, RxJS)",
+        "Angular admin panel development",
+        "WebGL & Web Worker performance optimization",
+        "WASM engine maintenance (C++)",
+        "Frontend CI/CD setup (Docker, GitHub Actions, GCP)"
+      ],
+      "techStack": ["React", "TypeScript", "Angular", "WebGL", "Docker", "GCP"]
+    },
+    {
+      "id": "poyue",
+      "company": "博悅網路科技有限公司",
+      "companyEn": "Poyue",
+      "title": "資深前端工程師 / 前端主管",
+      "titleEn": "Senior Frontend Engineer / Team Lead",
+      "period": ["2020/05", "2022/12"],
+      "responsibilities": [
+        "前端團隊管理（5-8人）",
+        "跨平台解決方案建置（React Native、Swift、Kotlin）",
+        "即時互動遊戲開發",
+        "客服聊天軟體開發（WebSocket）",
+        "電競賽事轉播系統（WebRTC）",
+        "Web3 應用與智能合約開發"
+      ],
+      "responsibilitiesEn": [
+        "Frontend team management (5-8 members)",
+        "Cross-platform solutions (React Native, Swift, Kotlin)",
+        "Real-time interactive game development",
+        "Customer service chat application (WebSocket)",
+        "Esports live streaming system (WebRTC)",
+        "Web3 applications & smart contract development"
+      ],
+      "techStack": ["React", "Vue", "React Native", "Swift", "Kotlin", "Laravel", "Solidity"]
+    },
+    {
+      "id": "ypcloud",
+      "company": "YPCloud",
+      "companyEn": "YPCloud",
+      "title": "工程師",
+      "titleEn": "Engineer",
+      "period": ["2020/02", "2020/05"],
+      "responsibilities": [
+        "Node.js 雲端系統 UI 開發",
+        "WebRTC 視訊系統建置",
+        "人臉辨識系統開發（ML）"
+      ],
+      "responsibilitiesEn": [
+        "Node.js cloud system UI development",
+        "WebRTC video conferencing system",
+        "Face recognition system development (ML)"
+      ],
+      "techStack": ["Node.js", "Express", "Vue", "WebRTC", "P5.js"]
+    },
+    {
+      "id": "huanji",
+      "company": "桓基科技股份有限公司",
+      "companyEn": "Huanji Tech",
+      "title": "工程師",
+      "titleEn": "Engineer",
+      "period": ["2018/09", "2019/11"],
+      "responsibilities": [
+        "HR 系統維護與開發（ASP.NET MVC）",
+        "資料庫維護（MS SQL）",
+        "系統版本更新與部署（IIS、Windows Server）",
+        "客戶專案進度協調"
+      ],
+      "responsibilitiesEn": [
+        "HR system maintenance & development (ASP.NET MVC)",
+        "Database administration (MS SQL)",
+        "System deployment & updates (IIS, Windows Server)",
+        "Client project coordination"
+      ],
+      "techStack": ["C#", "ASP.NET", "MS SQL", "IIS"]
+    }
+  ],
+  "skills": [
+    {
+      "id": "frontend",
+      "name": "Frontend",
+      "level": 95,
+      "technologies": [
+        "React",
+        "Vue",
+        "TypeScript",
+        "Next.js",
+        "Nuxt.js",
+        "React Native",
+        "Angular",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "id": "backend",
+      "name": "Backend",
+      "level": 80,
+      "technologies": [
+        "Node.js",
+        "NestJS",
+        "Express",
+        "Laravel",
+        "Spring Boot",
+        "Python",
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB"
+      ]
+    },
+    {
+      "id": "devops",
+      "name": "DevOps",
+      "level": 70,
+      "technologies": [
+        "Docker",
+        "AWS",
+        "GCP",
+        "GitHub Actions",
+        "nginx",
+        "Linux"
+      ]
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "mangachat",
+      "name": "漫話日記",
+      "nameEn": "MangaChat",
+      "description": "AI 文字轉漫畫的社群式視覺日記教育平台",
+      "descriptionEn": "AI-powered text-to-comic social visual diary platform for education",
+      "tags": ["Vue 3"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/mangachat.png",
+      "link": "https://game.mangachat.co/GZFPPgZ4IN0FPZI0ZoU76"
+    },
+    {
+      "id": "hanaline",
+      "name": "實境解謎設計系統",
+      "nameEn": "Hanaline",
+      "description": "讓用戶快速建立實境冒險解謎流程的設計平台",
+      "descriptionEn": "Platform for creating real-world adventure puzzle experiences",
+      "tags": ["Next.js", "NestJS"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/hanaline.svg",
+      "link": "https://hanaline.net/creator/login"
+    },
+    {
+      "id": "better2025",
+      "name": "Gummy B 線上試聽會",
+      "nameEn": "Better 2025",
+      "description": "饒舌歌手 Gummy B 專輯線上試聽活動網站",
+      "descriptionEn": "Online album listening party website for rapper Gummy B",
+      "tags": ["React"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/better2025.jpg",
+      "link": "https://better2025.nightonlyltd.com/"
+    },
+    {
+      "id": "tianwei",
+      "name": "田尾公路花園",
+      "nameEn": "Tian-Wei",
+      "description": "田尾鄉觀光與園藝文化推廣網站",
+      "descriptionEn": "Tourism & horticultural culture promotion website for Tianwei Township",
+      "tags": ["Next.js", "NestJS"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/tianwei_white.svg",
+      "link": "https://tian-wei.tw/"
+    },
+    {
+      "id": "laushu",
+      "name": "雲端記帳事務所",
+      "nameEn": "Laushu",
+      "description": "勞報單數位化與創業資源整合平台",
+      "descriptionEn": "Digital labor report & startup resource integration platform",
+      "tags": ["React", "Next.js", "NestJS"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/laushu.avif",
+      "link": "https://laushu.app/"
+    },
+    {
+      "id": "virsody",
+      "name": "線上策展平台",
+      "nameEn": "Virsody",
+      "description": "3D 虛擬展覽空間，支援圖片、影片、3D 模型展示",
+      "descriptionEn": "3D virtual exhibition space supporting images, videos & 3D models",
+      "tags": ["Vue 3", "NestJS", "3D"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/virsody.svg",
+      "link": "https://virsody.io/"
+    },
+    {
+      "id": "authme",
+      "name": "身份驗證 SDK",
+      "nameEn": "Authme SDK",
+      "description": "KYC 身份驗證解決方案，支援人臉辨識與證件驗證",
+      "descriptionEn": "KYC identity verification solution with face recognition & document verification",
+      "tags": ["Angular", "RxJS", "WASM"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/authme_logo.svg",
+      "link": "https://authme.com/"
+    },
+    {
+      "id": "ytg-game",
+      "name": "線上遊戲城",
+      "nameEn": "YTG Game",
+      "description": "包含多種自製遊戲的線上遊戲平台",
+      "descriptionEn": "Online gaming platform featuring multiple custom-built games",
+      "tags": ["Next.js", "React", "RxJS", "P5.js", "Three.js"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/ytg-game.jpg"
+    },
+    {
+      "id": "reflex",
+      "name": "運動數據平台",
+      "nameEn": "Reflex",
+      "description": "運動數據分析與分享平台",
+      "descriptionEn": "Sports data analytics & sharing platform",
+      "tags": ["React Native", "React", "Node.js"],
+      "type": "mobile+web",
+      "thumbnail": "/images/portfolio/reflex.png"
+    },
+    {
+      "id": "chatroom",
+      "name": "即時聊天系統",
+      "nameEn": "Chat Room",
+      "description": "跨平台即時通訊軟體",
+      "descriptionEn": "Cross-platform real-time messaging application",
+      "tags": ["WebSocket", "React", "React Native"],
+      "type": "mobile+web",
+      "thumbnail": "/images/portfolio/chatroom.png"
+    },
+    {
+      "id": "backstage",
+      "name": "數據管理後台",
+      "nameEn": "Backstage",
+      "description": "泛用型跨平台系統管理後台",
+      "descriptionEn": "Universal cross-platform admin management system",
+      "tags": ["Vue", "Node.js", "MySQL"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/backstage.png"
+    },
+    {
+      "id": "hr",
+      "name": "內政部差勤系統",
+      "nameEn": "MOI Attendance System",
+      "description": "差勤、薪資計算、總務系統",
+      "descriptionEn": "Attendance, payroll & general affairs management system",
+      "tags": ["ASP.NET", "MS SQL", "C#"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/hr.png"
+    },
+    {
+      "id": "crypto",
+      "name": "虛擬貨幣交易所",
+      "nameEn": "Crypto Exchange",
+      "description": "一般交易與合約交易平台",
+      "descriptionEn": "Spot & futures cryptocurrency trading platform",
+      "tags": ["React", "Node.js", "WebSocket"],
+      "type": "mobile+web",
+      "thumbnail": "/images/portfolio/crypto.png"
+    },
+    {
+      "id": "games",
+      "name": "遊戲平台",
+      "nameEn": "Game Center",
+      "description": "多款即時互動遊戲綜合站台",
+      "descriptionEn": "Multi-game platform with real-time interactive games",
+      "tags": ["React", "Canvas", "WebSocket"],
+      "type": "mobile",
+      "thumbnail": "/images/portfolio/games.png"
+    }
+  ],
+  "contact": {
+    "email": "liuwei811007@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/wei-liu-86666b1b3/",
+    "github": "https://github.com/LiuWilson00",
+    "line": "assss49"
+  }
+}

@@ -17,7 +17,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Stage 0 - CyberIris breathing circle with interactions\n\nImplemented the initial CyberIris component with:\n- 80 particles arranged in a circle with glow effect\n- Smooth breathing animation \\(12% amplitude, 4s cycle\\)\n- Click ripple interaction with elastic bounce-back\n- Mouse hover oscillation with proximity-based amplitude\n- Periodic phase calculation to ensure smooth wave continuity\n\nTech stack: Vite + React + TypeScript + GSAP + Tailwind CSS\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "WebFetch(domain:www.mamboleoo.be)",
       "Bash(npx tsc:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:virsody.io)"
     ]
   }
 }

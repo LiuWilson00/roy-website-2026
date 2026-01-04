@@ -1,87 +1,31 @@
 /**
- * Stage 2 - Project Galaxy 範例資料
+ * Stage 2 - Project Galaxy 資料
+ * 從 resume.json 載入作品集資料
  */
 
-import type { Project } from './types'
+import type { Project, GlowColor } from './types'
+import type { Language } from '../../i18n'
+import { getPortfolio } from '../../data/resume'
 
-// 生成 picsum 圖片 URL
-const getProjectImage = (seed: string, width = 400, height = 300) => {
-  return `https://picsum.photos/seed/${seed}/${width}/${height}`
+// 光暈顏色輪替
+const GLOW_COLORS: GlowColor[] = ['cyan', 'purple', 'blue', 'pink', 'green', 'orange', 'yellow']
+
+/**
+ * 取得專案資料
+ */
+export function getProjectData(lang: Language): Project[] {
+  const portfolio = getPortfolio(lang)
+
+  return portfolio.map((item, index) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    thumbnail: item.thumbnail,
+    tags: item.tags,
+    link: item.link,
+    glowColor: GLOW_COLORS[index % GLOW_COLORS.length],
+  }))
 }
 
-export const projectData: Project[] = [
-  {
-    id: 'nebula-explorer',
-    name: 'Nebula Explorer',
-    description: 'A 3D interactive space visualization tool built with Three.js and WebGL.',
-    thumbnail: getProjectImage('nebula', 400, 300),
-    tags: ['Three.js', 'WebGL', 'React'],
-    link: 'https://example.com/nebula',
-    glowColor: 'cyan',
-  },
-  {
-    id: 'data-forge',
-    name: 'Data Forge',
-    description: 'Real-time data analytics dashboard with advanced visualization.',
-    thumbnail: getProjectImage('dataforge', 400, 300),
-    tags: ['D3.js', 'Node.js', 'PostgreSQL'],
-    link: 'https://example.com/dataforge',
-    glowColor: 'purple',
-  },
-  {
-    id: 'code-stream',
-    name: 'Code Stream',
-    description: 'Live code collaboration platform with real-time sync.',
-    thumbnail: getProjectImage('codestream', 400, 300),
-    tags: ['Socket.io', 'Monaco Editor', 'Redis'],
-    glowColor: 'blue',
-  },
-  {
-    id: 'ai-assistant',
-    name: 'AI Assistant',
-    description: 'Intelligent chatbot powered by machine learning.',
-    thumbnail: getProjectImage('aibot', 400, 300),
-    tags: ['Python', 'TensorFlow', 'FastAPI'],
-    glowColor: 'pink',
-  },
-  {
-    id: 'cloud-sync',
-    name: 'Cloud Sync',
-    description: 'Cross-platform file synchronization service.',
-    thumbnail: getProjectImage('cloudsync', 400, 300),
-    tags: ['AWS', 'Go', 'React Native'],
-    glowColor: 'green',
-  },
-  {
-    id: 'design-system',
-    name: 'Design System',
-    description: 'Comprehensive UI component library for enterprise apps.',
-    thumbnail: getProjectImage('designsys', 400, 300),
-    tags: ['Storybook', 'Figma', 'TypeScript'],
-    glowColor: 'orange',
-  },
-  {
-    id: 'quantum-sim',
-    name: 'Quantum Sim',
-    description: 'Quantum computing simulator for educational purposes.',
-    thumbnail: getProjectImage('quantum', 400, 300),
-    tags: ['Rust', 'WASM', 'React'],
-    glowColor: 'yellow',
-  },
-  {
-    id: 'eco-tracker',
-    name: 'Eco Tracker',
-    description: 'Carbon footprint tracking app with gamification.',
-    thumbnail: getProjectImage('ecotrack', 400, 300),
-    tags: ['Flutter', 'Firebase', 'ML Kit'],
-    glowColor: 'green',
-  },
-  {
-    id: 'music-gen',
-    name: 'Music Gen',
-    description: 'AI-powered music generation and composition tool.',
-    thumbnail: getProjectImage('musicgen', 400, 300),
-    tags: ['PyTorch', 'Web Audio', 'Next.js'],
-    glowColor: 'purple',
-  },
-]
+// 保留向後相容的靜態資料匯出
+export const projectData = getProjectData('en')

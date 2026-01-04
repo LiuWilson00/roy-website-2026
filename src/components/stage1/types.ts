@@ -2,14 +2,14 @@
  * Stage 1 - Profile Overlay Types
  */
 
-// Timeline Entry 資料結構
+// Timeline Entry 資料結構 (符合 resume.json)
 export interface TimelineEntry {
   id: string
-  year: number
+  company: string
   title: string
-  organization: string
-  description: string
-  type: 'work' | 'education' | 'achievement'
+  period: string  // 已格式化的時間字串
+  responsibilities: string[]
+  techStack: string[]
 }
 
 // Skill Category 資料結構

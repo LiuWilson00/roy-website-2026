@@ -8,9 +8,10 @@ import { useRef, useMemo, useState } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { STAGE1_VISIBILITY } from './types'
-import { timelineData, skillData } from './data'
+import { getTimelineData, getSkillData } from './data'
 import Timeline from './Timeline'
 import SkillDashboard from './SkillDashboard'
+import { useLanguage } from '../../i18n'
 
 interface Stage1OverlayProps {
   scrollProgress: number
@@ -24,6 +25,11 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
   const titleRef = useRef<HTMLHeadingElement>(null)
   const hasAnimatedRef = useRef(false)
   const [mobileTab, setMobileTab] = useState<MobileTab>('timeline')
+  const { language } = useLanguage()
+
+  // 根據語言取得資料
+  const timelineData = useMemo(() => getTimelineData(language), [language])
+  const skillData = useMemo(() => getSkillData(), [])
 
   // 計算透明度
   const opacity = useMemo(() => {

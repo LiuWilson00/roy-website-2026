@@ -7,8 +7,9 @@ import { useRef, useMemo } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { STAGE2_VISIBILITY } from './types'
-import { projectData } from './data'
+import { getProjectData } from './data'
 import ProjectGalaxy from './ProjectGalaxy'
+import { useLanguage } from '../../i18n'
 
 interface Stage2OverlayProps {
   scrollProgress: number
@@ -19,6 +20,10 @@ export default function Stage2Overlay({ scrollProgress, onNavigateNext }: Stage2
   const overlayRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const hasAnimatedRef = useRef(false)
+  const { language } = useLanguage()
+
+  // 根據語言取得專案資料
+  const projectData = useMemo(() => getProjectData(language), [language])
 
   // 計算透明度
   const opacity = useMemo(() => {

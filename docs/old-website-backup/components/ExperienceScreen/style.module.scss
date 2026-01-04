@@ -1,0 +1,78 @@
+.experienceScreen {
+  .content {
+    z-index: 10;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    .title {
+      text-align: center;
+      color: white;
+      .main {
+        font-size: 2.5rem;
+        line-height: 1.5rem;
+        letter-spacing: 12.5px;
+        font-weight: bolder;
+      }
+    }
+  }
+  .timelineItem {
+    width: 300px;
+    .timelineDates {
+      color: var(--sub-color);
+      font-weight: bolder;
+      letter-spacing: 2px;
+    }
+    .timelineName {
+      color: var(--main-text-color);
+      font-size: 2rem;
+      font-weight: lighter;
+      letter-spacing: 2px;
+    }
+    .timelineJob {
+      color: var(--main-text-color);
+      font-weight: bolder;
+    }
+    .timelineContent {
+      color: var(--menu-text-active);
+      font-weight: lighter;
+    }
+  }
+}
+@media screen and (max-width: 480px) {
+  .experienceScreen {
+    .content {
+      .title {
+        margin-bottom: 30px;
+        .main {
+          font-size: 1.5rem;
+          line-height: 1rem;
+          letter-spacing: 3px;
+          font-weight: bolder;
+        }
+      }
+    }
+    :global(.ant-timeline-item-content) {
+      margin: 0 0 0 15px;
+    }
+    .timelineItem {
+      width: 150px;
+      // .timelineContent {
+      //   color: var(--menu-text-active);
+      //   width: 100px;
+      //   font-weight: lighter;
+      // }
+      .timelineName {
+        margin-bottom: 5px;
+      }
+      .timelineJob {
+        margin-bottom: 5px;
+      }
+      .timelineContent {
+        font-size: 10px;
+      }
+    }
+  }
+}

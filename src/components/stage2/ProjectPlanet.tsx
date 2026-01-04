@@ -122,6 +122,7 @@ export default function ProjectPlanet({
             inset -${planetSize * 0.15}px -${planetSize * 0.15}px ${planetSize * 0.3}px rgba(0,0,0,0.6),
             inset ${planetSize * 0.08}px ${planetSize * 0.08}px ${planetSize * 0.15}px rgba(255,255,255,0.1)
           `,
+          background: `radial-gradient(circle at 40% 40%, rgba(30,30,40,1), rgba(10,10,15,1))`,
         }}
       >
         {/* 載入佔位 */}
@@ -138,7 +139,7 @@ export default function ProjectPlanet({
         <img
           src={project.thumbnail}
           alt={project.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain p-3"
           style={{
             opacity: imageLoaded ? 1 : 0,
             transition: 'opacity 0.3s',

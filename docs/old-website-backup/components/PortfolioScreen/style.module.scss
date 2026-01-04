@@ -1,0 +1,205 @@
+.protfolioScreen {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 150px;
+  .content {
+    z-index: 10;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    .title {
+      text-align: center;
+      color: white;
+      .main {
+        font-size: 2.5rem;
+        line-height: 1.5rem;
+        letter-spacing: 12.5px;
+        font-weight: bolder;
+      }
+      .sub {
+        font-size: 1.5rem;
+        letter-spacing: 3px;
+        color: var(--menu-text-active);
+      }
+    }
+    .profolioContent {
+      .profolios {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        .profolio {
+          position: relative;
+          display: flex;
+          // overflow: scroll;
+          transition: all 500ms;
+          width: 200px;
+          height: 200px;
+          background-position: center;
+          background-size: cover;
+          .mask {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            transition: all 300ms;
+            width: 100%;
+            height: 0%;
+            z-index: 1;
+            opacity: 0.75;
+            background-color: var(--sub-background);
+          }
+          .title {
+            transition: all 500ms;
+            transition-delay: 300ms;
+            color: white;
+            margin: auto;
+            opacity: 0;
+            position: relative;
+            z-index: 10;
+            // display: none;
+            .mainTitle {
+              font-size: 1.75rem;
+            }
+            .subTitle {
+              text-transform: uppercase;
+              font-size: 1rem;
+              color: var(--menu-text-color);
+            }
+          }
+          .activeGroup {
+            transition: all 500ms;
+            transition-delay: 500ms;
+            position: absolute;
+            left: 0px;
+            width: 100%;
+            opacity: 0;
+            height: 0%;
+            bottom: 0px;
+            z-index: 10;
+            .mainTitle {
+              font-size: 1.75rem;
+              color: white;
+            }
+            .subTitle {
+              text-transform: uppercase;
+              font-size: 1rem;
+              color: var(--menu-text-color);
+            }
+          }
+        }
+        .profolio:hover {
+          .mask {
+            height: 100%;
+          }
+          .title {
+            // display: inline-block;
+            opacity: 1;
+          }
+        }
+        .profolio.active {
+          width: 400px;
+          height: 350px;
+          .mask {
+            height: 100%;
+          }
+          .title {
+            // display: inline-block;
+            opacity: 0;
+          }
+          .activeGroup {
+            height: 100%;
+            opacity: 1;
+          }
+        }
+        .profolio.nonActive {
+          .mask {
+            background-color: var(--main-background);
+            height: 100%;
+            opacity: 0.9;
+          }
+          .activeGroup {
+            transition-delay: 0s;
+          }
+        }
+        .profolio.nonActive:hover {
+          .mask {
+            background-color: var(--sub-background);
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 480px) {
+  .protfolioScreen {
+    height: 100vh;
+    padding-top: 75px;
+    .content {
+      .title {
+        margin-bottom: 30px;
+        .main {
+          font-size: 1.5rem;
+          line-height: 1rem;
+          letter-spacing: 3px;
+          font-weight: bolder;
+        }
+        .sub {
+          font-size: 0.75rem;
+          letter-spacing: 3px;
+        }
+      }
+      .profolioContent {
+        width: 300px;
+        height: 200px;
+        margin: 0 auto;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        .profolios {
+          width: 1000px;
+          .profolio {
+            .mask {
+              height: 100%;
+            }
+            .title {
+              opacity: 1;
+              .mainTitle {
+                font-size: 1.25rem;
+              }
+              .subTitle {
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                color: var(--menu-text-color);
+              }
+            }
+          }
+          .profolio.active {
+            width: 300px;
+            height: 350px;
+            .mask {
+              height: 100%;
+            }
+            .title {
+              // display: inline-block;
+              opacity: 0;
+            }
+            .activeGroup {
+              height: 100%;
+              opacity: 1;
+            }
+          }
+        }
+      }
+      .profolioContent.haveActive {
+        overflow-x: initial;
+        overflow-y: initial;
+        .profolios {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
