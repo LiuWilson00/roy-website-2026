@@ -1,0 +1,307 @@
+/**
+ * FlyingObjects CSS - 飛行物彩蛋動畫
+ */
+
+.flying-objects-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+/* 飛行物基礎 */
+.flying-object {
+  position: absolute;
+  animation-duration: 8s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.flying-object.left-to-right {
+  left: -150px;
+  bottom: -50px;
+  top: auto;
+  animation-name: flyLeftToRight;
+}
+
+.flying-object.right-to-left {
+  right: -150px;
+  bottom: -50px;
+  top: auto;
+  animation-name: flyRightToLeft;
+}
+
+/* 左到右：從左下飛到右上 */
+@keyframes flyLeftToRight {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(calc(100vw + 200px), calc(-100vh - 100px));
+  }
+}
+
+/* 右到左：從右下飛到左上 */
+@keyframes flyRightToLeft {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(calc(-100vw - 200px), calc(-100vh - 100px));
+  }
+}
+
+/* ========== 飛碟 UFO ========== */
+.ufo-wrapper {
+  position: relative;
+  width: 80px;
+  height: 50px;
+  animation: ufoHover 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes ufoHover {
+  0% { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-5px) rotate(2deg); }
+}
+
+.ufo-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ufo-dome {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 18px;
+  background: linear-gradient(180deg, #a8e6cf 0%, #88d8b0 100%);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow:
+    inset 0 -5px 10px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba(168, 230, 207, 0.5);
+}
+
+.ufo-ring {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 20px;
+  background: linear-gradient(180deg, #666 0%, #444 50%, #333 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.5),
+    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+.ufo-light {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  box-shadow: 0 0 10px #ff6b6b, 0 0 20px #ff6b6b;
+  animation: ufoLights 0.3s ease-in-out infinite alternate;
+}
+
+.ufo-light:nth-child(2) {
+  animation-delay: 0.1s;
+  background: #ffd93d;
+  box-shadow: 0 0 10px #ffd93d, 0 0 20px #ffd93d;
+}
+
+.ufo-light:nth-child(3) {
+  animation-delay: 0.2s;
+  background: #6bcb77;
+  box-shadow: 0 0 10px #6bcb77, 0 0 20px #6bcb77;
+}
+
+.ufo-light:nth-child(4) {
+  animation-delay: 0.3s;
+  background: #4d96ff;
+  box-shadow: 0 0 10px #4d96ff, 0 0 20px #4d96ff;
+}
+
+@keyframes ufoLights {
+  0% { opacity: 0.5; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.ufo-bottom {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 10px;
+  background: linear-gradient(180deg, #444 0%, #222 100%);
+  border-radius: 0 0 50% 50%;
+}
+
+.ufo-beam {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(168, 230, 207, 0.4) 0%, transparent 100%);
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  animation: beamPulse 1s ease-in-out infinite;
+}
+
+@keyframes beamPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* ========== 火箭 Rocket ========== */
+.rocket-wrapper {
+  position: relative;
+  width: 30px;
+  height: 80px;
+}
+
+.rocket-wrapper.left-to-right {
+  transform: rotate(45deg);
+}
+
+.rocket-wrapper.right-to-left {
+  transform: rotate(-45deg);
+}
+
+.rocket-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.rocket-nose {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid #e74c3c;
+}
+
+.rocket-nose::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: -5px;
+  width: 10px;
+  height: 12px;
+  background: linear-gradient(90deg, #c0392b 0%, #e74c3c 50%, #c0392b 100%);
+}
+
+.rocket-window {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  border-radius: 50%;
+  border: 2px solid #dfe6e9;
+  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.rocket-body::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 45px;
+  background: linear-gradient(90deg, #bdc3c7 0%, #ecf0f1 30%, #ecf0f1 70%, #bdc3c7 100%);
+  border-radius: 5px 5px 0 0;
+}
+
+.rocket-fin {
+  position: absolute;
+  bottom: 15px;
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 10px solid #e74c3c;
+}
+
+.rocket-fin-left {
+  left: -5px;
+  border-right: 12px solid #c0392b;
+  transform: rotate(-10deg);
+}
+
+.rocket-fin-right {
+  right: -5px;
+  border-left: 12px solid #c0392b;
+  transform: rotate(10deg);
+}
+
+.rocket-fire {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 30px;
+  background: linear-gradient(180deg, #f39c12 0%, #e74c3c 50%, transparent 100%);
+  border-radius: 0 0 50% 50%;
+  animation: fireFlicker 0.1s ease-in-out infinite alternate;
+}
+
+.fire-inner {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 20px;
+  background: linear-gradient(180deg, #fff 0%, #f39c12 50%, transparent 100%);
+  border-radius: 0 0 50% 50%;
+}
+
+@keyframes fireFlicker {
+  0% {
+    transform: translateX(-50%) scaleY(1) scaleX(1);
+  }
+  100% {
+    transform: translateX(-50%) scaleY(1.1) scaleX(0.9);
+  }
+}
+
+/* 火箭尾跡 */
+.rocket-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 50px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  border-radius: 50%;
+  animation: trailPulse 0.2s ease-in-out infinite alternate;
+}
+
+@keyframes trailPulse {
+  0% { opacity: 0.3; height: 50px; }
+  100% { opacity: 0.6; height: 60px; }
+}

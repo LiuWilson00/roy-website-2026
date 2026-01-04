@@ -15,6 +15,8 @@ import { usePerformanceSettings } from '../hooks/usePerformanceSettings'
 import CoreGlow from './CoreGlow'
 import SVGFilters from './SVGFilters'
 import StageDebugger from './StageDebugger'
+import StarField from './StarField'
+import FlyingObjects from './FlyingObjects'
 import GlobalNav from './GlobalNav'
 import IntroOverlay from './IntroOverlay'
 import { Stage1Overlay } from './stage1'
@@ -413,6 +415,12 @@ export default function ParticleCanvas() {
         className="sticky top-0 w-full h-screen overflow-hidden cursor-pointer"
         onClick={handleClick}
       >
+        {/* 星空背景 - 固定在所有 Stage */}
+        <StarField />
+
+        {/* 飛行物彩蛋 - 定時飛過的飛碟和火箭 */}
+        <FlyingObjects />
+
         {center.x > 0 && (
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             <SVGFilters glowRef={glowRef} glowIntensityRef={glowIntensityRef} />
