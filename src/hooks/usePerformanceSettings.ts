@@ -3,7 +3,8 @@
  * 根據裝置類型自動調整效能參數
  */
 
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
+import { useIsMobile } from './useIsMobile'
 
 export interface PerformanceSettings {
   /** 粒子數量 */
@@ -41,44 +42,11 @@ const MOBILE_SETTINGS: PerformanceSettings = {
 }
 
 /**
- * 偵測是否為行動裝置
- */
-function detectMobile(): boolean {
-  if (typeof window === 'undefined') return false
-
-  // 檢查螢幕寬度
-  const isSmallScreen = window.innerWidth < 768
-
-  // 檢查觸控裝置
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-
-  // 檢查 User Agent (作為備用)
-  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-
-  return isSmallScreen || (isTouchDevice && isMobileUA)
-}
-
-/**
  * 效能設定 Hook
  * 自動根據裝置類型選擇最佳效能設定
  */
 export function usePerformanceSettings(): PerformanceSettings {
-  const [isMobile, setIsMobile] = useState(() => detectMobile())
-
-  useEffect(() => {
-    // 初始偵測
-    setIsMobile(detectMobile())
-
-    // 監聽視窗大小變化
-    const handleResize = () => {
-      setIsMobile(detectMobile())
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  const isMobile = useIsMobile()
 
   const settings = useMemo(() => {
     return isMobile ? MOBILE_SETTINGS : DESKTOP_SETTINGS

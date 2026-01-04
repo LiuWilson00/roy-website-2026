@@ -9,23 +9,7 @@ import { PLANETS_PER_PAGE, PLANET_POSITIONS, PLANET_POSITIONS_MOBILE } from './t
 import ProjectPlanet from './ProjectPlanet'
 import ProjectCard from './ProjectCard'
 import GalaxyNav from './GalaxyNav'
-
-// 檢測是否為手機版
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  return isMobile
-}
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 interface ProjectGalaxyProps {
   projects: Project[]
