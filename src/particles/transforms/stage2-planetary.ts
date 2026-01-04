@@ -7,6 +7,13 @@
 import type { Particle, ParticleState, TransformContext, SceneState, CoreGlowState } from '../types'
 import { DEFAULT_CORE_STATE } from '../types'
 import { lerp } from '../../utils/math'
+import {
+  getParticleOrbitCache,
+  getPooledPoint3D,
+  getPooledProjection,
+  getPooledDepth,
+  type CachedOrbitInfo
+} from '../../utils/cache'
 
 // Stage 2 配置
 export const STAGE2_CONFIG = {
@@ -66,50 +73,18 @@ export const STAGE2_CORE_CONFIG: Partial<CoreGlowState> = {
   pulseAmplitude: 0.06,
 }
 
+// 軌道快取（延遲初始化）
+let orbitCache: CachedOrbitInfo[] | null = null
+
 /**
- * 根據粒子 ID 取得所屬軌道資訊
+ * 取得粒子軌道資訊（使用快取）
  */
-interface OrbitInfo {
-  orbitIndex: number
-  radius: number
-  speed: number
-  direction: number
-  tilt: number        // 該軌道的傾斜角度（度）
-  localIndex: number  // 在該軌道內的索引
-  totalInOrbit: number
-}
-
-function getParticleOrbit(particleId: number): OrbitInfo {
-  const { orbits } = STAGE2_CONFIG
-  let accumulated = 0
-
-  for (let i = 0; i < orbits.length; i++) {
-    const orbit = orbits[i]
-    if (particleId < accumulated + orbit.count) {
-      return {
-        orbitIndex: i,
-        radius: orbit.radius,
-        speed: orbit.speed,
-        direction: orbit.direction,
-        tilt: orbit.tilt,
-        localIndex: particleId - accumulated,
-        totalInOrbit: orbit.count,
-      }
-    }
-    accumulated += orbit.count
+function getParticleOrbit(particleId: number, particleCount: number): CachedOrbitInfo {
+  // 延遲初始化快取
+  if (!orbitCache || orbitCache.length !== particleCount) {
+    orbitCache = getParticleOrbitCache(particleCount, STAGE2_CONFIG.orbits)
   }
-
-  // Fallback to last orbit
-  const lastOrbit = orbits[orbits.length - 1]
-  return {
-    orbitIndex: orbits.length - 1,
-    radius: lastOrbit.radius,
-    speed: lastOrbit.speed,
-    direction: lastOrbit.direction,
-    tilt: lastOrbit.tilt,
-    localIndex: 0,
-    totalInOrbit: lastOrbit.count,
-  }
+  return orbitCache[particleId] || orbitCache[orbitCache.length - 1]
 }
 
 /**
@@ -122,20 +97,18 @@ interface Point3D {
 }
 
 /**
- * 繞 X 軸旋轉（傾斜效果）
+ * 繞 X 軸旋轉（傾斜效果）- 使用預計算的 cos/sin
  */
-function rotateAroundX(point: Point3D, angle: number): Point3D {
-  const cos = Math.cos(angle)
-  const sin = Math.sin(angle)
-  return {
-    x: point.x,
-    y: point.y * cos - point.z * sin,
-    z: point.y * sin + point.z * cos,
-  }
+function rotateAroundXCached(point: Point3D, cos: number, sin: number): Point3D {
+  return getPooledPoint3D(
+    point.x,
+    point.y * cos - point.z * sin,
+    point.y * sin + point.z * cos
+  )
 }
 
 /**
- * 透視投影
+ * 透視投影 - 使用物件池
  * 返回 2D 座標和縮放因子
  */
 function perspectiveProject(
@@ -146,15 +119,15 @@ function perspectiveProject(
   const z = Math.max(point.z + focalLength, 1)
   const scale = focalLength / z
 
-  return {
-    x: point.x * scale,
-    y: point.y * scale,
-    scale,
-  }
+  return getPooledProjection(
+    point.x * scale,
+    point.y * scale,
+    scale
+  )
 }
 
 /**
- * 計算深度相關屬性
+ * 計算深度相關屬性 - 使用物件池
  * @param z 當前 Z 座標（正值 = 遠離用戶，負值 = 靠近用戶）
  * @param maxZ 最大 Z 範圍（軌道半徑）
  */
@@ -175,16 +148,20 @@ function getDepthProperties(z: number, maxZ: number): {
   // 再加強一次
   const finalDepth = Math.pow(easedDepth, 0.5)
 
-  return {
-    size: lerp(config.minSize, config.maxSize, finalDepth),
-    opacity: lerp(config.minOpacity, config.maxOpacity, finalDepth),
-    glow: lerp(config.minGlow, config.maxGlow, finalDepth),
-  }
+  return getPooledDepth(
+    lerp(config.minSize, config.maxSize, finalDepth),
+    lerp(config.minOpacity, config.maxOpacity, finalDepth),
+    lerp(config.minGlow, config.maxGlow, finalDepth)
+  )
 }
+
+// 預設粒子數量（用於軌道快取）
+const DEFAULT_PARTICLE_COUNT = 80
 
 /**
  * Stage 2 變換函數
  * 行星軌道運動 + 3D 透視效果
+ * 使用快取優化：預計算的軌道資訊、三角函數值、物件池
  */
 export function stage2Transform(
   particle: Particle,
@@ -193,32 +170,26 @@ export function stage2Transform(
   const { time, center } = context
   const config = STAGE2_CONFIG
 
-  // 取得粒子的軌道資訊
-  const orbit = getParticleOrbit(particle.id)
+  // 取得預計算的軌道資訊（包含 tiltCos/tiltSin 和 baseAngle）
+  const orbit = getParticleOrbit(particle.id, DEFAULT_PARTICLE_COUNT)
 
-  // 計算該粒子在軌道上的初始角度（均勻分佈）
-  const baseAngle = (orbit.localIndex / orbit.totalInOrbit) * Math.PI * 2
+  // 計算當前軌道角度（使用快取的 baseAngle）
+  const currentAngle = orbit.baseAngle + time * orbit.speed * orbit.direction * Math.PI * 2
 
-  // 計算當前軌道角度（加上時間驅動的旋轉）
-  const currentAngle = baseAngle + time * orbit.speed * orbit.direction * Math.PI * 2
+  // 在 XZ 平面上計算軌道位置（使用物件池）
+  const point3D = getPooledPoint3D(
+    Math.cos(currentAngle) * orbit.radius,
+    0,
+    Math.sin(currentAngle) * orbit.radius
+  )
 
-  // 在 XZ 平面上計算軌道位置（Y 為上方向）
-  const point3D: Point3D = {
-    x: Math.cos(currentAngle) * orbit.radius,
-    y: 0,
-    z: Math.sin(currentAngle) * orbit.radius,
-  }
+  // 應用傾斜（使用預計算的 tiltCos/tiltSin）
+  const tilted = rotateAroundXCached(point3D, orbit.tiltCos, orbit.tiltSin)
 
-  // 使用該軌道的傾斜角度（每個軌道有獨立的傾斜）
-  const tiltRadians = orbit.tilt * Math.PI / 180
-
-  // 應用傾斜（繞 X 軸旋轉）
-  const tilted = rotateAroundX(point3D, tiltRadians)
-
-  // 透視投影到 2D
+  // 透視投影到 2D（使用物件池）
   const projected = perspectiveProject(tilted, config.focalLength)
 
-  // 計算深度相關屬性
+  // 計算深度相關屬性（使用物件池）
   const depth = getDepthProperties(tilted.z, orbit.radius)
 
   return {
@@ -227,7 +198,7 @@ export function stage2Transform(
     r: depth.size,
     opacity: depth.opacity,
     glow: depth.glow,
-    trailLength: config.trailLength,  // 使用配置的拖尾長度
+    trailLength: config.trailLength,
   }
 }
 

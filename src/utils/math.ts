@@ -2,6 +2,8 @@
  * Math Utilities for Particle System
  */
 
+import { parseHSLCached, getPooledPoint2D } from './cache'
+
 // 線性插值
 export function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t
@@ -57,10 +59,25 @@ export function polarToCartesian(
   radius: number,
   theta: number
 ): { x: number; y: number } {
-  return {
-    x: centerX + Math.cos(theta) * radius,
-    y: centerY + Math.sin(theta) * radius,
-  }
+  // 使用物件池減少 GC 壓力
+  return getPooledPoint2D(
+    centerX + Math.cos(theta) * radius,
+    centerY + Math.sin(theta) * radius
+  )
+}
+
+// 極座標轉笛卡爾座標（使用預計算的 cos/sin）
+export function polarToCartesianCached(
+  centerX: number,
+  centerY: number,
+  radius: number,
+  cos: number,
+  sin: number
+): { x: number; y: number } {
+  return getPooledPoint2D(
+    centerX + cos * radius,
+    centerY + sin * radius
+  )
 }
 
 // 笛卡爾座標轉極座標
@@ -98,19 +115,9 @@ export function lerpAngle(a: number, b: number, t: number): number {
 
 // 解析 HSL 字串 "hsl(h, s%, l%)" 為 {h, s, l}
 // 也支援 'white' 作為特殊值
+// 使用快取版本提升效能
 export function parseHSL(hslString: string): { h: number; s: number; l: number } | null {
-  // 處理 'white' 特殊值
-  if (hslString.toLowerCase() === 'white') {
-    return { h: 0, s: 0, l: 100 }
-  }
-
-  const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
-  if (!match) return null
-  return {
-    h: parseInt(match[1], 10),
-    s: parseInt(match[2], 10),
-    l: parseInt(match[3], 10),
-  }
+  return parseHSLCached(hslString)
 }
 
 // HSL 轉字串
