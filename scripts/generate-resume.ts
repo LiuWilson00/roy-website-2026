@@ -28,7 +28,7 @@ interface ResumeExperience {
 interface ResumeSkill {
   id: string
   name: string
-  level: number
+  years: string
   technologies: string[]
 }
 
@@ -48,13 +48,25 @@ interface ResumeContact {
   email: string
   linkedin: string
   github: string
-  line: string
+  cake: string
+}
+
+interface ResumeCoreValue {
+  id: string
+  icon: string
+  title: string
+  titleEn: string
+  subtitle: string
+  subtitleEn: string
+  description: string
+  descriptionEn: string
 }
 
 interface ResumeData {
   experience: ResumeExperience[]
   skills: ResumeSkill[]
   portfolio: ResumePortfolio[]
+  coreValues: ResumeCoreValue[]
   contact: ResumeContact
 }
 
@@ -70,13 +82,13 @@ const CONFIG = {
   // 個人資訊
   profile: {
     name: 'ROY.DEV',
-    realName: '劉威',
+    realName: '劉為',
     realNameEn: 'Wei Liu',
     title: 'Software Engineer',
     titleZh: '軟體工程師',
     tagline: 'Building Logic from Chaos',
     taglineZh: '從混沌中構建邏輯',
-    phone: '0905-171-585',
+    phone: '0985-630-944',
     location: 'Taipei, Taiwan',
     locationZh: '台北, 台灣',
     website: 'roy-dev.com',
@@ -405,31 +417,18 @@ body {
   color: var(--text-primary);
 }
 
-.skill-level {
+.skill-years {
   font-family: 'JetBrains Mono', monospace;
   font-size: 7pt;
   color: var(--primary-dark);
-}
-
-.skill-bar {
-  height: 4px;
-  background: var(--border-light);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-
-.skill-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-  border-radius: 2px;
-  box-shadow: 0 0 6px var(--primary-glow);
+  font-weight: 500;
 }
 
 .skill-techs {
   font-size: 6.5pt;
   color: var(--text-light);
   line-height: 1.3;
+  margin-top: 2px;
 }
 
 /* ===== Portfolio ===== */
@@ -463,6 +462,34 @@ body {
   flex-wrap: wrap;
   gap: 3px;
   margin-top: 3px;
+}
+
+/* ===== Core Values ===== */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.value-item {
+  background: var(--primary-glow);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.value-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.value-desc {
+  font-size: 6.5pt;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 /* ===== Education (右欄小型) ===== */
@@ -573,10 +600,7 @@ const generateHTML = (data: ResumeData, lang: Language, qrCodeSvg: string): stri
     <div class="skill-item">
       <div class="skill-header">
         <span class="skill-name">${skill.name}</span>
-        <span class="skill-level">${skill.level}%</span>
-      </div>
-      <div class="skill-bar">
-        <div class="skill-fill" style="width: ${skill.level}%"></div>
+        <span class="skill-years">${skill.years} ${isZh ? '年' : 'yrs'}</span>
       </div>
       <div class="skill-techs">${skill.technologies.slice(0, 6).join(' · ')}</div>
     </div>
@@ -590,6 +614,14 @@ const generateHTML = (data: ResumeData, lang: Language, qrCodeSvg: string): stri
       <div class="portfolio-tags">
         ${p.tags.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('')}
       </div>
+    </div>
+  `).join('')
+
+  // 核心價值 HTML
+  const coreValuesHTML = data.coreValues.map(v => `
+    <div class="value-item">
+      <div class="value-title">${isZh ? v.title : v.titleEn}</div>
+      <div class="value-desc">${isZh ? v.description : v.descriptionEn}</div>
     </div>
   `).join('')
 
@@ -639,6 +671,14 @@ const generateHTML = (data: ResumeData, lang: Language, qrCodeSvg: string): stri
       </div>
     </header>
 
+    <!-- Core Values -->
+    <section class="section" style="margin-top: 10px; margin-bottom: 10px;">
+      <h2 class="section-title">${isZh ? '核心價值' : 'Core Values'}</h2>
+      <div class="values-grid">
+        ${coreValuesHTML}
+      </div>
+    </section>
+
     <!-- Main Content -->
     <main class="main">
       <div class="left-column">
@@ -666,8 +706,8 @@ const generateHTML = (data: ResumeData, lang: Language, qrCodeSvg: string): stri
         <section class="section">
           <h2 class="section-title">${isZh ? '學歷' : 'Education'}</h2>
           <div class="edu-item">
-            <div class="edu-school">${isZh ? '國立中興大學' : 'NCHU'}</div>
-            <div class="edu-degree">${isZh ? '資訊科學與工程學系' : 'Computer Science'}</div>
+            <div class="edu-school">${isZh ? '中國文化大學' : 'PCCU'}</div>
+            <div class="edu-degree">${isZh ? '應用數學系' : 'Applied Mathematics'}</div>
             <div class="edu-year">2014 - 2018</div>
           </div>
         </section>
@@ -682,7 +722,7 @@ const generateHTML = (data: ResumeData, lang: Language, qrCodeSvg: string): stri
             </div>
             <div>
               <strong>${isZh ? '英文' : 'English'}</strong>
-              <span style="color: var(--text-light);">- ${isZh ? '中高級' : 'Professional'}</span>
+              <span style="color: var(--text-light);">- ${isZh ? '中等' : 'Intermediate'}</span>
             </div>
           </div>
         </section>

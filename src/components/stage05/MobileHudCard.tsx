@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { HiX } from 'react-icons/hi'
 import type { CoreValue } from './types'
 
@@ -139,8 +140,8 @@ export default function MobileHudCard({ value, index }: MobileHudCardProps) {
         `}</style>
       </div>
 
-      {/* 展開的詳情 Modal */}
-      {isExpanded && value.description && (
+      {/* 展開的詳情 Modal - 使用 Portal 渲染到 body 避免 overflow hidden 問題 */}
+      {isExpanded && value.description && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-6 pointer-events-auto"
           onClick={() => setIsExpanded(false)}
@@ -159,7 +160,7 @@ export default function MobileHudCard({ value, index }: MobileHudCardProps) {
               height="200"
               viewBox="0 0 300 200"
               preserveAspectRatio="none"
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full pointer-events-none"
             >
               <defs>
                 <filter id={`modal-glow-${value.id}`} x="-20%" y="-20%" width="140%" height="140%">
@@ -235,7 +236,8 @@ export default function MobileHudCard({ value, index }: MobileHudCardProps) {
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )

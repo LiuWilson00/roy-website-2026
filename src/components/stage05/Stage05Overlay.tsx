@@ -3,9 +3,10 @@
  * 顯示核心價值/優勢
  */
 
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { STAGE05_VISIBILITY, CARD_POSITIONS } from './types'
 import { getCoreValuesData } from './data'
 import HudCard from './HudCard'
@@ -25,6 +26,23 @@ export default function Stage05Overlay({ scrollProgress, onNavigateNext }: Stage
 
   // 根據語言取得資料
   const coreValues = useMemo(() => getCoreValuesData(language), [language])
+
+  // 手機版輪播狀態
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  // 輪播導航
+  const goToSlide = useCallback((index: number) => {
+    const newIndex = Math.max(0, Math.min(index, coreValues.length - 1))
+    setCurrentIndex(newIndex)
+  }, [coreValues.length])
+
+  const goToPrev = useCallback(() => {
+    setCurrentIndex(prev => (prev === 0 ? coreValues.length - 1 : prev - 1))
+  }, [coreValues.length])
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex(prev => (prev === coreValues.length - 1 ? 0 : prev + 1))
+  }, [coreValues.length])
 
   // 計算透明度
   const opacity = useMemo(() => {
@@ -180,35 +198,61 @@ export default function Stage05Overlay({ scrollProgress, onNavigateNext }: Stage
       {/* ===== 手機版佈局 (< md) - 中央輪播圖 ===== */}
       <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center">
         {/* 輪播圖容器 */}
-        <div className="relative w-full max-w-[300px]">
-          {/* 水平滾動輪播 */}
-          <div
-            className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-            style={{ scrollSnapType: 'x mandatory' }}
+        <div className="relative w-full max-w-[320px] px-4">
+          {/* 左箭頭 */}
+          <button
+            onClick={goToPrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center text-cyan-400/60 hover:text-cyan-400 active:text-cyan-300 transition-colors pointer-events-auto"
+            aria-label="Previous"
           >
-            {coreValues.map((value, index) => (
-              <div
-                key={value.id}
-                className="flex-shrink-0 w-full flex justify-center snap-center px-4"
-              >
-                <MobileHudCard value={value} index={index} />
-              </div>
-            ))}
+            <HiChevronLeft size={28} />
+          </button>
+
+          {/* 右箭頭 */}
+          <button
+            onClick={goToNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center text-cyan-400/60 hover:text-cyan-400 active:text-cyan-300 transition-colors pointer-events-auto"
+            aria-label="Next"
+          >
+            <HiChevronRight size={28} />
+          </button>
+
+          {/* 輪播內容 - 使用 transform 切換 */}
+          <div className="overflow-hidden mx-6">
+            <div
+              className="flex transition-transform duration-300 ease-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {coreValues.map((value, index) => (
+                <div
+                  key={value.id}
+                  className="flex-shrink-0 w-full flex justify-center"
+                >
+                  <MobileHudCard value={value} index={index} />
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* 輪播指示器 */}
-          <div className="flex justify-center gap-2 mt-4">
+          {/* 輪播指示器 - 可點擊 */}
+          <div className="flex justify-center gap-3 mt-4 pointer-events-auto">
             {coreValues.map((_, index) => (
-              <div
+              <button
                 key={index}
-                className="w-2 h-2 rounded-full bg-cyan-400/30 transition-all duration-300"
+                onClick={() => goToSlide(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  index === currentIndex
+                    ? 'bg-cyan-400 scale-125'
+                    : 'bg-cyan-400/30 hover:bg-cyan-400/50'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
 
-          {/* 滑動提示 */}
-          <p className="font-mono text-white/30 text-[10px] tracking-wider text-center mt-3">
-            ← SWIPE →
+          {/* 計數器 */}
+          <p className="font-mono text-cyan-400/50 text-xs tracking-wider text-center mt-3">
+            {currentIndex + 1} / {coreValues.length}
           </p>
         </div>
       </div>
