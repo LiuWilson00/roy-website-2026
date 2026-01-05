@@ -389,6 +389,58 @@
       "thumbnail": "/images/portfolio/games.png"
     }
   ],
+  "coreValues": [
+    {
+      "id": "fullstack",
+      "icon": "///",
+      "title": "全端技術",
+      "titleEn": "Full-Stack",
+      "subtitle": "高適應力",
+      "subtitleEn": "High Adaptability",
+      "description": "不受限於特定語言，熟練 React/Vue 與 NestJS/Laravel 生態。擅長根據專案需求快速掌握新技術，解決核心問題。",
+      "descriptionEn": "Not limited to specific languages. Proficient in React/Vue and NestJS/Laravel ecosystems. Quick to master new technologies based on project needs."
+    },
+    {
+      "id": "product",
+      "icon": "0->1",
+      "title": "0→1 產品",
+      "titleEn": "0→1 Product",
+      "subtitle": "實戰派",
+      "subtitleEn": "Hands-On Builder",
+      "description": "具備豐富的接案與獨立開發經驗，擅長將模糊的商業需求轉化為落地技術，是工程團隊與商業邏輯間的最佳橋樑。",
+      "descriptionEn": "Rich experience in freelance and indie development. Skilled at transforming vague business needs into technical solutions—bridging engineering and business."
+    },
+    {
+      "id": "ai",
+      "icon": ">_",
+      "title": "AI 驅動",
+      "titleEn": "AI-Driven",
+      "subtitle": "高效工作流",
+      "subtitleEn": "Efficient Workflow",
+      "description": "建立從調研、設計到 QA 的 AI 協作體系。能善用工具優化開發全流程，大幅提升產出效率與程式品質。",
+      "descriptionEn": "Built an AI collaboration system from research to QA. Leveraging tools to optimize the entire development process, boosting efficiency and code quality."
+    },
+    {
+      "id": "team",
+      "icon": "</>",
+      "title": "團隊協作者",
+      "titleEn": "Collaborator",
+      "subtitle": "動靜皆宜",
+      "subtitleEn": "Dynamic & Focused",
+      "description": "兼具熱情的創意思考與冷靜的邏輯實作能力。既能作為團隊溝通的潤滑劑，也能專注於穩定輸出高品質代碼。",
+      "descriptionEn": "Combining passionate creative thinking with calm logical execution. Can facilitate team communication while delivering high-quality code consistently."
+    },
+    {
+      "id": "culture",
+      "icon": "***",
+      "title": "生活與靈感",
+      "titleEn": "Life & Inspiration",
+      "subtitle": "有靈魂開發者",
+      "subtitleEn": "Soulful Developer",
+      "description": "熱愛音樂、藝術、文創與遊戲。深信豐富的生活體驗能為產品注入溫度，致力於成為有技術也有靈魂的開發者。",
+      "descriptionEn": "Passionate about music, art, creative culture and games. Believing rich life experiences bring warmth to products—a developer with both skills and soul."
+    }
+  ],
   "contact": {
     "email": "liuwei811007@gmail.com",
     "linkedin": "https://www.linkedin.com/in/wei-liu-86666b1b3/",
