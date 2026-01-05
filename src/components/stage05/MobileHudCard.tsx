@@ -10,10 +10,9 @@ import type { CoreValue } from './types'
 interface MobileHudCardProps {
   value: CoreValue
   index: number
-  isActive?: boolean
 }
 
-export default function MobileHudCard({ value, index, isActive = false }: MobileHudCardProps) {
+export default function MobileHudCard({ value, index }: MobileHudCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   // 卡片尺寸 - 輪播圖用較大尺寸
