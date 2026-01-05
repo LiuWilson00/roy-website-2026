@@ -6,6 +6,7 @@
 import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { useLanguage, LANGUAGES, type Language } from '../i18n'
 
 interface IntroOverlayProps {
   /** 滾動進度 (0 = Stage 0, 1 = Stage 1, etc.) */
@@ -93,6 +94,7 @@ function StarDecoration({ className }: { className?: string }) {
 
 export default function IntroOverlay({ scrollProgress, onNavigateNext }: IntroOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
+  const { language, setLanguage, t } = useLanguage()
   const { displayText, isComplete } = useTypewriter(
     TYPEWRITER_CONFIG.text,
     TYPEWRITER_CONFIG.typingSpeed
@@ -153,7 +155,7 @@ export default function IntroOverlay({ scrollProgress, onNavigateNext }: IntroOv
 
         {/* Subtitle */}
         <p className="font-mono text-white/70 text-sm tracking-[0.3em] uppercase mb-2 intro-animate">
-          Software Engineer
+          {t.softwareEngineer}
         </p>
 
         {/* Tagline */}
@@ -165,12 +167,31 @@ export default function IntroOverlay({ scrollProgress, onNavigateNext }: IntroOv
       {/* Below Circle - Hover Hint */}
       <div className="absolute top-[62%] left-1/2 -translate-x-1/2 intro-animate">
         <p className="font-mono text-white/30 text-xs tracking-[0.2em] uppercase">
-          Hover to Engage
+          {t.hoverToEngage}
         </p>
       </div>
 
       {/* Bottom Section */}
       <div className="absolute bottom-8 left-0 right-0">
+        {/* Language Switcher - Bottom Left */}
+        <div className="absolute bottom-0 left-8 flex gap-2 intro-animate pointer-events-auto">
+          {(Object.keys(LANGUAGES) as Language[]).map((lang) => (
+            <button
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              className={`
+                font-mono text-xs tracking-wider transition-all duration-200
+                ${language === lang
+                  ? 'text-white/80'
+                  : 'text-white/30 hover:text-white/60'
+                }
+              `}
+            >
+              {LANGUAGES[lang].label}
+            </button>
+          ))}
+        </div>
+
         {/* Scroll Hint - Center */}
         <div className="text-center intro-animate">
           <button
@@ -178,7 +199,7 @@ export default function IntroOverlay({ scrollProgress, onNavigateNext }: IntroOv
             className="group flex flex-col items-center gap-2 mx-auto pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"
           >
             <p className="font-mono text-white/40 text-xs tracking-[0.3em] uppercase group-hover:text-white/60 transition-colors">
-              Scroll to Explore
+              {t.scrollToExplore}
             </p>
             <svg
               width="12"

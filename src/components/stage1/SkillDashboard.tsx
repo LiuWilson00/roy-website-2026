@@ -8,6 +8,7 @@ import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import type { SkillCategory as SkillCategoryType } from './types'
 import SkillCategory from './SkillCategory'
+import { useLanguage } from '../../i18n'
 
 interface SkillDashboardProps {
   categories: SkillCategoryType[]
@@ -19,6 +20,7 @@ export default function SkillDashboard({
   animate = true,
 }: SkillDashboardProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const { t } = useLanguage()
 
   useGSAP(() => {
     if (!animate || !containerRef.current) return
@@ -55,9 +57,9 @@ export default function SkillDashboard({
         <div className="absolute -bottom-px -right-px w-3 h-3 border-b border-r border-cyan-400/60" />
 
         {/* 標題 */}
-        <div className="font-mono text-sm text-cyan-400 mb-4 pb-2 border-b border-cyan-400/20">
+        <div className="font-mono text-sm text-cyan-400 mb-4 pb-2 border-b border-cyan-400/20 uppercase">
           <span className="text-white/60">&gt; </span>
-          SKILL PROFICIENCY DASHBOARD
+          {t.skillDashboardTitle}
         </div>
 
         {/* 技能列表 */}

@@ -18,18 +18,18 @@ import { easeInOutCubic, cycleFromWhite, parseHSL, lerpHSL, CYCLE_COLORS, CYCLE_
 // Re-export for convenience
 export type { StageDefinition }
 
-// Stage 互動強度配置
+// Stage 互動強度配置 (更新：加入 Stage 0.5 後的新進度值)
 export const STAGE_TRANSITION_CONFIG = {
   /** Stage 0 互動在此進度後開始減弱 */
   stage0FadeStart: 0,
   /** Stage 0 互動完全消失的進度 */
   stage0FadeEnd: 0.5,
-  /** Stage 1 互動開始的進度 */
-  stage1Start: 0.3,
-  /** Stage 1 互動完全生效的進度 */
-  stage1Full: 1.0,
-  /** Stage 3 過渡開始的進度 */
-  stage3TransitionStart: 2,
+  /** Stage 1 (Bloom) 互動開始的進度 (現在是 Stage 2 位置) */
+  stage1Start: 1.3,
+  /** Stage 1 (Bloom) 互動完全生效的進度 */
+  stage1Full: 2.0,
+  /** Stage 3 (Grid) 過渡開始的進度 (現在是 Stage 4 位置) */
+  stage3TransitionStart: 3,
   /** 顏色循環週期（秒） */
   colorCycleDuration: 8,
 }
@@ -148,30 +148,30 @@ export function useStageComputation({
       }
     }
 
-    // Stage 3 使用純白色，不套用顏色循環
-    // 計算 Stage 3 的強度
+    // Stage Grid (Stage 4) 使用純白色，不套用顏色循環
+    // 計算 Stage Grid 的強度 (現在是 scroll progress 3+)
     const stage3Strength = Math.max(0, Math.min(1, progress - stage3TransitionStart))
 
     if (stage3Strength >= 1) {
-      // Stage 3 完全進入：使用純白色
+      // Stage Grid 完全進入：使用純白色
       baseState.color = 'white'
     } else {
-      // Stage 0-2: 動態循環顏色（每個粒子有不同的相位偏移）
+      // Stage 0-Planetary: 動態循環顏色（每個粒子有不同的相位偏移）
       // 使用 theta 作為偏移，讓相鄰粒子有相近但不同的顏色
       const colorOffset = particle.theta / (Math.PI * 2) // 0-1 基於角度位置
 
-      // 使用 easing 讓顏色過渡更自然
+      // 使用 easing 讓顏色過渡更自然 (到 Stage 0.5 結束時完全著色)
       const colorProgress = easeInOutCubic(Math.min(progress, 1))
 
       // 計算最終顏色
       let cycleColor: string
 
-      if (progress < 1) {
-        // Stage 0→1: 純三色漸變
+      if (progress < 2) {
+        // Stage 0→0.5→Bloom: 純三色漸變
         cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS)
-      } else if (progress < 2) {
-        // Stage 1→2: 從三色漸變平滑過渡到藍色系
-        const blendProgress = easeInOutCubic(progress - 1) // 0 at progress=1, 1 at progress=2
+      } else if (progress < 3) {
+        // Stage Bloom→Planetary: 從三色漸變平滑過渡到藍色系
+        const blendProgress = easeInOutCubic(progress - 2) // 0 at progress=2, 1 at progress=3
         const colorFromThree = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS)
         const colorFromBlue = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS_BLUE)
 
@@ -185,12 +185,12 @@ export function useStageComputation({
           cycleColor = colorFromBlue
         }
       } else {
-        // Stage 2+: 純藍色系
+        // Stage Planetary+: 純藍色系
         cycleColor = cycleFromWhite(context.time, colorOffset, colorProgress, colorCycleDuration, CYCLE_COLORS_BLUE)
       }
 
       if (stage3Strength > 0) {
-        // Stage 2→3 過渡中：從循環顏色漸變回白色
+        // Stage Planetary→Grid 過渡中：從循環顏色漸變回白色
         // 使用 easing 讓過渡更平滑
         const fadeToWhite = easeInOutCubic(stage3Strength)
         // 透過降低飽和度和提高亮度來漸變回白色

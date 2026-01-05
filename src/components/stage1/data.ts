@@ -33,18 +33,19 @@ export function getTimelineData(lang: Language): TimelineEntry[] {
 /**
  * 取得 Skill 技能資料
  */
-export function getSkillData(): SkillCategory[] {
+export function getSkillData(lang: Language): SkillCategory[] {
   const skills = getSkills()
 
   return skills.map(skill => ({
     id: skill.id,
     name: skill.name.toUpperCase(),
-    skills: skill.technologies, // 顯示全部技術
-    proficiency: skill.level,
+    years: skill.years,
+    skills: skill.technologies,
+    highlights: lang === 'zh' ? skill.highlights : skill.highlightsEn,
     color: SKILL_COLOR_MAP[skill.id] || 'cyan',
   }))
 }
 
 // 保留向後相容的靜態資料匯出（使用英文預設值）
 export const timelineData = getTimelineData('en')
-export const skillData = getSkillData()
+export const skillData = getSkillData('en')

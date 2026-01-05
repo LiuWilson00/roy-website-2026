@@ -4,10 +4,15 @@
  * UI 元素保持英文
  */
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react'
+import { en, type Translations } from './translations/en'
+import { zh } from './translations/zh'
 
 // 支援的語言
 export type Language = 'en' | 'zh'
+
+// 翻譯資料
+const translations: Record<Language, Translations> = { en, zh }
 
 // 語言配置
 export const LANGUAGES: Record<Language, { label: string; name: string }> = {
@@ -20,6 +25,7 @@ interface I18nContextType {
   language: Language
   setLanguage: (lang: Language) => void
   toggleLanguage: () => void
+  t: Translations
 }
 
 // 建立 Context
@@ -66,6 +72,9 @@ export function I18nProvider({ children }: I18nProviderProps) {
     setLanguage(language === 'en' ? 'zh' : 'en')
   }, [language, setLanguage])
 
+  // 取得當前語言的翻譯
+  const t = useMemo(() => translations[language], [language])
+
   // 更新 HTML lang 屬性
   useEffect(() => {
     if (isInitialized) {
@@ -77,6 +86,7 @@ export function I18nProvider({ children }: I18nProviderProps) {
     language,
     setLanguage,
     toggleLanguage,
+    t,
   }
 
   return (

@@ -19,6 +19,7 @@ import StarField from './StarField'
 import FlyingObjects from './FlyingObjects'
 import GlobalNav from './GlobalNav'
 import IntroOverlay from './IntroOverlay'
+import { Stage05Overlay } from './stage05'
 import { Stage1Overlay } from './stage1'
 import { Stage2Overlay } from './stage2'
 import { Stage4Overlay } from './stage4'
@@ -26,6 +27,8 @@ import {
   stage0Transform,
   getBreathRadius,
   stage0SceneState,
+  stage05Transform,
+  stage05SceneState,
   stage1Transform,
   stage1SceneState,
   stage2Transform,
@@ -45,9 +48,10 @@ import type { TransformContext, Point, SceneState } from '../particles/types'
 // Stage 配置
 const STAGES: StageDefinition[] = [
   { id: 0, name: 'circle', transform: stage0Transform, sceneState: stage0SceneState },
-  { id: 1, name: 'bloom', transform: stage1Transform, sceneState: stage1SceneState },
-  { id: 2, name: 'planetary', transform: stage2Transform, sceneState: stage2SceneState },
-  { id: 3, name: 'grid', transform: stage3Transform, sceneState: stage3SceneState },
+  { id: 1, name: 'pulse-rings', transform: stage05Transform, sceneState: stage05SceneState },
+  { id: 2, name: 'bloom', transform: stage1Transform, sceneState: stage1SceneState },
+  { id: 3, name: 'planetary', transform: stage2Transform, sceneState: stage2SceneState },
+  { id: 4, name: 'grid', transform: stage3Transform, sceneState: stage3SceneState },
 ]
 
 export default function ParticleCanvas() {
@@ -249,14 +253,21 @@ export default function ParticleCanvas() {
     })
 
     // 更新光暈強度（基於滾動進度）
+    // Stage 進度對應：0(circle), 1(pulse), 2(bloom), 3(planetary), 4(grid)
     const progress = scrollProgressRef.current
     if (mainGroupRef.current) {
       let filterValue = 'url(#glow)'
-      if (progress >= 2.5) {
+      if (progress >= 4) {
+        // Stage 3 (grid) - 無光暈
         filterValue = 'none'
+      } else if (progress >= 3) {
+        // Stage 2 (planetary) - 基礎光暈
+        filterValue = 'url(#glow)'
       } else if (progress >= 2) {
+        // Stage 1 (bloom) - 基礎光暈
         filterValue = 'url(#glow)'
       } else if (progress > 0.3) {
+        // Stage 0, 0.5 - 強化光暈
         filterValue = 'url(#glow-intense)'
       }
       mainGroupRef.current.setAttribute('filter', filterValue)
@@ -273,12 +284,11 @@ export default function ParticleCanvas() {
     // 方案 5：減少 State 更新頻率 - 只在變化超過閾值時更新
     const currentProgress = scrollProgressRef.current
 
-    // 更新場景狀態（使用較寬鬆的閾值）
-    if (Math.abs(currentProgress - lastSceneStateProgressRef.current) > perfSettings.stateUpdateThreshold * 5) {
-      const newSceneState = computeSceneState(context, currentProgress)
-      setSceneState(newSceneState)
-      lastSceneStateProgressRef.current = currentProgress
-    }
+    // 更新場景狀態
+    // 需要每幀更新以支援時間相關的動畫（如恆星閃爍）
+    const newSceneState = computeSceneState(context, currentProgress)
+    setSceneState(newSceneState)
+    lastSceneStateProgressRef.current = currentProgress
     timeRef.current = time
 
     // 更新顯示進度（用於 UI）- 使用閾值控制更新頻率
@@ -407,7 +417,7 @@ export default function ParticleCanvas() {
     <div
       ref={containerRef}
       className="relative bg-black"
-      style={{ height: '400vh' }}
+      style={{ height: '500vh' }}
     >
       {/* Sticky 容器 */}
       <div
@@ -507,6 +517,12 @@ export default function ParticleCanvas() {
 
         {/* Intro Overlay - Stage 0 個人資訊 */}
         <IntroOverlay
+          scrollProgress={displayProgress}
+          onNavigateNext={navigateToNextStage}
+        />
+
+        {/* Stage 0.5 Overlay - 核心價值 */}
+        <Stage05Overlay
           scrollProgress={displayProgress}
           onNavigateNext={navigateToNextStage}
         />

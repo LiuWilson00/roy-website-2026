@@ -39,15 +39,15 @@ export function getContactData(): ContactItem[] {
     },
   ]
 
-  // 如果有 LINE ID 則加入
-  if (contact.line) {
+  // 如果有 CakeResume 則加入
+  if (contact.cake) {
     items.push({
-      id: 'line',
+      id: 'cake',
       type: 'website', // 使用 website type 作為通用
-      title: 'LINE',
-      subtitle: contact.line,
-      href: `https://line.me/ti/p/${contact.line}`,
-      action: 'copy',
+      title: 'CAKE',
+      subtitle: 'CakeResume',
+      href: contact.cake,
+      action: 'link',
     })
   }
 

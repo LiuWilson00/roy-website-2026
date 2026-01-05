@@ -60,12 +60,12 @@ export const SIZE_MAP_MOBILE: Record<PlanetSize, number> = {
   xl: 95,
 }
 
-// Stage 2 可見性配置
+// Stage 2 可見性配置 (現在是 Stage 3 位置，因為新增了 Stage 0.5)
 export const STAGE2_VISIBILITY = {
-  fadeInStart: 1.5,
-  fadeInEnd: 2.0,
-  fadeOutStart: 2.5,
-  fadeOutEnd: 3.0,
+  fadeInStart: 2.5,
+  fadeInEnd: 3.0,
+  fadeOutStart: 3.5,
+  fadeOutEnd: 4.0,
 }
 
 // 每頁星球數量

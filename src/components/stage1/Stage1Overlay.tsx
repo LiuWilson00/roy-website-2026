@@ -25,11 +25,11 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
   const titleRef = useRef<HTMLHeadingElement>(null)
   const hasAnimatedRef = useRef(false)
   const [mobileTab, setMobileTab] = useState<MobileTab>('timeline')
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
 
   // 根據語言取得資料
   const timelineData = useMemo(() => getTimelineData(language), [language])
-  const skillData = useMemo(() => getSkillData(), [])
+  const skillData = useMemo(() => getSkillData(language), [language])
 
   // 計算透明度
   const opacity = useMemo(() => {
@@ -188,7 +188,7 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
             className="group flex flex-col items-center gap-2 mx-auto pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"
           >
             <p className="font-mono text-white/30 text-xs tracking-widest uppercase group-hover:text-white/50 transition-colors">
-              Scroll to explore
+              {t.scrollToExplore}
             </p>
             <svg
               width="12"
@@ -215,7 +215,7 @@ export default function Stage1Overlay({ scrollProgress, onNavigateNext }: Stage1
           className="group flex flex-col items-center gap-2 mx-auto pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"
         >
           <p className="font-mono text-white/40 text-xs tracking-[0.3em] uppercase group-hover:text-white/60 transition-colors">
-            Scroll to Explore
+            {t.scrollToExplore}
           </p>
           <svg
             width="12"

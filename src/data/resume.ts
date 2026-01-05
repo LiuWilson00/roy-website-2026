@@ -20,8 +20,10 @@ export interface ResumeExperience {
 export interface ResumeSkill {
   id: string
   name: string
-  level: number
+  years: string
   technologies: string[]
+  highlights: string[]
+  highlightsEn: string[]
 }
 
 export interface ResumePortfolio {
@@ -40,7 +42,7 @@ export interface ResumeContact {
   email: string
   linkedin: string
   github: string
-  line: string
+  cake: string
 }
 
 export interface ResumeData {

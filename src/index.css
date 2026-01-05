@@ -8,3 +8,13 @@ body {
   color: #fff;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
+/* 隱藏滾動條 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -14,12 +14,12 @@ export interface ContactItem {
   action: ContactAction
 }
 
-// Contact 可見性配置 (顯示在 Stage 3)
+// Contact 可見性配置 (現在是 Stage 4 位置，因為新增了 Stage 0.5)
 export const STAGE4_VISIBILITY = {
-  fadeInStart: 2.3,   // 開始淡入 (Stage 2 後段)
-  fadeInEnd: 2.7,     // 完全可見 (Stage 3 前段)
-  fadeOutStart: 4.0,  // 不淡出（最後一個 Stage）
-  fadeOutEnd: 4.5,
+  fadeInStart: 3.3,   // 開始淡入 (Stage 3 後段)
+  fadeInEnd: 3.7,     // 完全可見 (Stage 4 前段)
+  fadeOutStart: 5.0,  // 不淡出（最後一個 Stage）
+  fadeOutEnd: 5.5,
 }
 
 // 顏色配置

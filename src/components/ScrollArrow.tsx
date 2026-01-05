@@ -3,22 +3,22 @@
  * 顯示 "Scroll to Explore" 提示，點擊可跳到下一個 Stage
  */
 
+import { useLanguage } from '../i18n'
+
 interface ScrollArrowProps {
-  text?: string
   onClick: () => void
 }
 
-export default function ScrollArrow({
-  text = 'Scroll to Explore',
-  onClick,
-}: ScrollArrowProps) {
+export default function ScrollArrow({ onClick }: ScrollArrowProps) {
+  const { t } = useLanguage()
+
   return (
     <button
       onClick={onClick}
       className="group flex flex-col items-center gap-2 pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"
     >
       <p className="font-mono text-white/40 text-xs tracking-[0.3em] uppercase group-hover:text-white/60 transition-colors">
-        {text}
+        {t.scrollToExplore}
       </p>
       <svg
         width="12"

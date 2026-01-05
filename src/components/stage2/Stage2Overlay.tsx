@@ -20,7 +20,7 @@ export default function Stage2Overlay({ scrollProgress, onNavigateNext }: Stage2
   const overlayRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const hasAnimatedRef = useRef(false)
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
 
   // 根據語言取得專案資料
   const projectData = useMemo(() => getProjectData(language), [language])
@@ -102,7 +102,7 @@ export default function Stage2Overlay({ scrollProgress, onNavigateNext }: Stage2
           className="group flex flex-col items-center gap-2 mx-auto pointer-events-auto cursor-pointer hover:opacity-80 transition-opacity"
         >
           <p className="font-mono text-white/40 text-xs tracking-[0.3em] uppercase group-hover:text-white/60 transition-colors">
-            Scroll to Explore
+            {t.scrollToExplore}
           </p>
           <svg
             width="12"

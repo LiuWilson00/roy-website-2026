@@ -131,7 +131,7 @@
     {
       "id": "huanji",
       "company": "桓基科技股份有限公司",
-      "companyEn": "Huanji Tech",
+      "companyEn": "HGiga",
       "title": "工程師",
       "titleEn": "Engineer",
       "period": ["2018/09", "2019/11"],
@@ -154,7 +154,7 @@
     {
       "id": "frontend",
       "name": "Frontend",
-      "level": 95,
+      "years": "7+",
       "technologies": [
         "React",
         "Vue",
@@ -164,28 +164,51 @@
         "React Native",
         "Angular",
         "Tailwind CSS"
+      ],
+      "highlights": [
+        "完成/維護超過 20 個產品級應用",
+        "精通 React、Vue、Angular 等主流框架",
+        "具備 WASM 整合與效能優化經驗",
+        "跨平台開發經驗（React Native、Swift、Kotlin）"
+      ],
+      "highlightsEn": [
+        "Delivered & maintained 20+ production applications",
+        "Proficient in React, Vue, Angular frameworks",
+        "WASM integration & performance optimization",
+        "Cross-platform development (React Native, Swift, Kotlin)"
       ]
     },
     {
       "id": "backend",
       "name": "Backend",
-      "level": 80,
+      "years": "5+",
       "technologies": [
         "Node.js",
         "NestJS",
         "Express",
         "Laravel",
-        "Spring Boot",
         "Python",
         "MySQL",
         "PostgreSQL",
         "MongoDB"
+      ],
+      "highlights": [
+        "參與超過 10 個後端服務開發",
+        "本地 LLM 整合與 AI 應用開發",
+        "微服務架構設計與系統重構",
+        "資料庫查詢效能調校與優化"
+      ],
+      "highlightsEn": [
+        "Contributed to 10+ backend services",
+        "Local LLM integration & AI application development",
+        "Microservices architecture design & refactoring",
+        "Database query performance tuning & optimization"
       ]
     },
     {
       "id": "devops",
       "name": "DevOps",
-      "level": 70,
+      "years": "2+",
       "technologies": [
         "Docker",
         "AWS",
@@ -193,6 +216,16 @@
         "GitHub Actions",
         "nginx",
         "Linux"
+      ],
+      "highlights": [
+        "從零建置企業級服務部署流程",
+        "熟悉 AWS、GCP 等主流雲端服務",
+        "獨立建制多個專案的 CI/CD Pipeline"
+      ],
+      "highlightsEn": [
+        "Built enterprise-grade deployment from scratch",
+        "Proficient in AWS, GCP cloud services",
+        "Independently set up CI/CD pipelines for multiple projects"
       ]
     }
   ],
@@ -285,6 +318,17 @@
       "thumbnail": "/images/portfolio/ytg-game.jpg"
     },
     {
+      "id": "icybox",
+      "name": "Icybox 官方網站",
+      "nameEn": "Icybox Official Website",
+      "description": "Icybox 品牌官網，負責前後台系統維護與開發（2023-2024）。新版本已改用 WordPress，連結僅供參考",
+      "descriptionEn": "German cold chain logistics brand website, full-stack maintenance & development (2023-2024). New version uses WordPress, link for reference only",
+      "tags": ["Laravel", "Vue", "React", "DevOps"],
+      "type": "web",
+      "thumbnail": "/images/portfolio/icybox.png",
+      "link": "https://icybox.de/"
+    },
+    {
       "id": "reflex",
       "name": "運動數據平台",
       "nameEn": "Reflex",
@@ -349,6 +393,6 @@
     "email": "liuwei811007@gmail.com",
     "linkedin": "https://www.linkedin.com/in/wei-liu-86666b1b3/",
     "github": "https://github.com/LiuWilson00",
-    "line": "assss49"
+    "cake": "https://www.cake.me/me/wei-liu-1a9f76"
   }
 }
