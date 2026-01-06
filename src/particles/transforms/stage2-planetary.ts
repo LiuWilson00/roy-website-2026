@@ -42,12 +42,22 @@ export const STAGE2_CONFIG = {
   // Total: 80 particles
 
   // 深度渲染（極大化差異讓 3D 效果非常明顯）
-  minSize: 0.8,       // 遠處：非常小
-  maxSize: 12,        // 近處：非常大
+  minSize: 0.5,       // 遠處：非常小
+  maxSize: 6,         // 近處：適中大小（原本 12 太大）
   minOpacity: 0.08,   // 遠處：幾乎看不見
   maxOpacity: 1.0,    // 近處：完全不透明
   minGlow: 1,
-  maxGlow: 25,
+  maxGlow: 20,
+
+  // 色彩配置 - 豐富的光暈顏色
+  colors: [
+    'hsl(190, 100%, 60%)',  // 青色
+    'hsl(220, 100%, 65%)',  // 藍色
+    'hsl(270, 80%, 65%)',   // 紫色
+    'hsl(320, 80%, 60%)',   // 粉紅
+    'hsl(45, 100%, 60%)',   // 金色
+    'hsl(160, 80%, 55%)',   // 青綠
+  ],
 
   // 拖尾效果
   trailLength: 0.9,   // 較長的拖尾
@@ -192,6 +202,10 @@ export function stage2Transform(
   // 計算深度相關屬性（使用物件池）
   const depth = getDepthProperties(tilted.z, orbit.radius)
 
+  // 根據軌道索引選擇顏色
+  const colorIndex = orbit.orbitIndex % config.colors.length
+  const color = config.colors[colorIndex]
+
   return {
     x: center.x + projected.x,
     y: center.y + projected.y,
@@ -199,6 +213,7 @@ export function stage2Transform(
     opacity: depth.opacity,
     glow: depth.glow,
     trailLength: config.trailLength,
+    color,
   }
 }
 

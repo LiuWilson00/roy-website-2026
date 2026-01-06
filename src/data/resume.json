@@ -318,6 +318,16 @@
       "thumbnail": "/images/portfolio/ytg-game.jpg"
     },
     {
+      "id": "wanrui",
+      "name": "海關表單產製系統",
+      "nameEn": "Customs Form Generation System",
+      "description": "進出口表單自動轉換系統，透過 NLP 模型將自然語言轉換至指定類別，自動產製不同格式的海關表單",
+      "descriptionEn": "Automated import/export form conversion system using NLP models to transform natural language into specified categories and generate various customs form formats",
+      "tags": ["Electron", "NLP", "TypeScript"],
+      "type": "desktop",
+      "thumbnail": "/images/portfolio/wanrui.png"
+    },
+    {
       "id": "icybox",
       "name": "Icybox 官方網站",
       "nameEn": "Icybox Official Website",

@@ -44,12 +44,12 @@ export const GLOW_COLORS: Record<GlowColor, { primary: string; glow: string }> =
   yellow: { primary: 'rgb(250, 204, 21)', glow: 'rgba(250, 204, 21, 0.6)' },
 }
 
-// 星球尺寸映射 (px) - 桌面版
+// 星球尺寸映射 (px) - 桌面版（加大）
 export const SIZE_MAP: Record<PlanetSize, number> = {
-  sm: 50,
-  md: 70,
-  lg: 90,
-  xl: 120,
+  sm: 70,
+  md: 95,
+  lg: 120,
+  xl: 150,
 }
 
 // 星球尺寸映射 (px) - 手機版（縮小）
